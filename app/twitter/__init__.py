@@ -9,9 +9,9 @@ from .database import db
 from .settings import APP_SETTINGS
 
 
-_MIGRATION_DIR = os.path.join('app', 'migrations')  # Директория для миграций
+_MIGRATION_DIR = os.path.join('twitter', 'migrations')  # Директория для миграций
 
-# migrate = Migrate()
+migrate = Migrate()
 
 
 def create_app():
@@ -27,7 +27,7 @@ def create_app():
     # Инициализация БД
     db.init_app(app)
 
-    migrate = Migrate(app, db)
+    # migrate = Migrate(app, db)
 
     # Инициализация репозитория для миграций в корне проекта
     migrate.init_app(app, db, directory=_MIGRATION_DIR, render_as_batch=True)

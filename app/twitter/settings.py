@@ -9,4 +9,4 @@ if not find_dotenv():
 else:
     load_dotenv()
 
-APP_SETTINGS = os.getenv('APP_SETTINGS')  # Сохраняем выбранную конфигурацию для исопльзования в приложении
+APP_SETTINGS = os.getenv('APP_SETTINGS')  # Сохраняем выбранную конфигурацию для использования в приложении

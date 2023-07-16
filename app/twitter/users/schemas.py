@@ -1,20 +1,19 @@
-from marshmallow import Schema
-from marshmallow import Schema, fields, validate, ValidationError, post_load
+from marshmallow import Schema, fields
 
 
-class BaseSchema(Schema):
-    result = fields.Bool(default=True)
+class UserSchema(Schema):
+    id = fields.Int(dump_only=True)  # dump_only=True - id присваивается после добавления записи в БД
+    name = fields.Str(required=True)  # Обязательное поле
+    followers = fields.List(fields.Nested('UserSchema', only=('id', 'name')))  # Подписчики
+    following = fields.List(fields.Nested('UserSchema', only=('id', 'name')))  # Подписки
 
 
-from typing import Dict
-from marshmallow import Schema, fields, validate, ValidationError, post_load
-
-
-# TODO В работе...
-# class UserSchema(Schema):
-#     id = fields.Int(dump_only=True)
-#     name = fields.Str(required=True)
-#     followers = fields.List(UserSchema)  # Подписчики
-#     following = fields.List(UserSchema)  # На кого подписан
-
-
+# class ResponseSchema(Schema):
+#     result = fields.Bool(default=True)
+#     user = fields.Nested(UserSchema)
+#
+#
+# class ErrorResponseSchema(ResponseSchema):
+#     result = fields.Bool(default=False)
+#     error_type = fields.Str()
+#     error_message = fields.Str()

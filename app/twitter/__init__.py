@@ -2,7 +2,6 @@ import os
 from loguru import logger
 
 from flask import Flask
-from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_restful import Api
 
@@ -11,6 +10,8 @@ from .settings import APP_SETTINGS
 
 
 _MIGRATION_DIR = os.path.join('app', 'twitter/migrations')  # Директория для миграций
+
+migrate = Migrate()
 
 
 def create_app():
@@ -26,8 +27,7 @@ def create_app():
     # Инициализация БД
     db.init_app(app)
 
-    migrate = Migrate()
-    # ma = Marshmallow(app)  # TODO В работе
+    # migrate = Migrate(app, db)
 
     # Инициализация репозитория для миграций в корне проекта
     migrate.init_app(app, db, directory=_MIGRATION_DIR, render_as_batch=True)
@@ -41,8 +41,9 @@ def create_app():
     with app.test_request_context():
         db.create_all()
 
-    from .users.routes import UserData
+    from .users.routes import UserData, UserDataForId
 
     api.add_resource(UserData, '/api/users/me', endpoint='personal-data')
+    api.add_resource(UserDataForId, '/api/users/<int:user_id>', endpoint='user-data')
 
     return app

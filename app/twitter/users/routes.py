@@ -4,6 +4,7 @@ from flask import request
 from loguru import logger
 
 from .services.user import UserService
+from .schemas import UserSchema
 
 
 class UserData(Resource):
@@ -12,19 +13,39 @@ class UserData(Resource):
         """
         Возврат данных о текущем пользователе
         """
-        logger.debug('Отработка GET-метода')
-
         api_key = request.headers.get('api-key')
         logger.info(f'api_key: {api_key}')
 
         if api_key:
-            res = UserService.get_user(api_key=api_key)
+            user = UserService.get_user_for_key(api_key=api_key)
 
-            if res:
-                return {'data': res}, 200
+            if user:
+                data = UserSchema().dump(user)
+                return {'result': True, 'user': data}, 200
             else:
-                return 'Нет данных о пользователей', 404
+                return 'Нет данных о пользователе', 404
 
         else:
             logger.error('Не найден api-key в http-header')
             return 'Ошибка в авторизации', 401
+
+
+class UserDataForId(Resource):
+
+    def get(self, user_id):
+        """
+        Возврат данных о текущем пользователе
+        """
+        # user_id = request.args.get('id')
+        logger.info(f'user_id: {user_id}')
+
+        if user_id:
+            user = UserService.get_user_for_id(user_id=user_id)
+
+            if user:
+                data = UserSchema().dump(user)
+                return {'result': True, 'user': data}, 200
+
+        return 'Страница не найдена', 404
+
+

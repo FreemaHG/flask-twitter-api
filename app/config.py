@@ -2,6 +2,7 @@ import os
 
 
 _IMAGES_FOLDER = os.path.join('twitter/static', 'img')  # Директория для аватаров и изображений к твитам
+_MIGRATION_DIR = os.path.join('app', 'twitter/migrations')  # Директория для миграций
 
 
 class Config(object):

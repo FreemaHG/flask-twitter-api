@@ -6,7 +6,7 @@ from ..database import db
 
 
 # Вспомогательная таблица для отслеживания подписок пользователей между собой
-followers = db.Table(
+user_to_user = db.Table(
     'followers',
     db.Column('user_id', db.ForeignKey('user.id'), primary_key=True),
     db.Column('following_user_id', db.ForeignKey('user.id'), primary_key=True)
@@ -25,12 +25,12 @@ class User(db.Model):
     created_at = db.Column(db.String, default=datetime.datetime.now())
 
     # Многие ко многим (подписки пользователей друг на друга)
-    followers = db.relationship(
+    following = db.relationship(
         'User',
-        secondary=followers,
-        backref=db.backref('following', lazy='selectin'),
-        primaryjoin=id == followers.c.user_id,
-        secondaryjoin=id == followers.c.following_user_id,
+        secondary=user_to_user,
+        backref=db.backref('followers', lazy='selectin'),
+        primaryjoin=id == user_to_user.c.user_id,
+        secondaryjoin=id == user_to_user.c.following_user_id,
     )
 
 

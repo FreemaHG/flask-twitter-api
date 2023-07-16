@@ -14,6 +14,7 @@ class Config(object):
     SECRET_KEY = 'dev'  # Секретный ключ, н-р, для подписи cookie
     SQLALCHEMY_DATABASE_URI = 'sqlite:///project.db'  # Местоположение БД
     SQLALCHEMY_TRACK_MODIFICATIONS = False  # Отключаем систему событий Flask-SQLAlchemy
+    UPLOAD = _IMAGES_FOLDER
 
 
 class ProductionConfig(Config):
@@ -24,7 +25,6 @@ class ProductionConfig(Config):
 class DevelopmentConfig(Config):
     DEVELOPMENT = True
     DEBUG = True
-    UPLOAD = _IMAGES_FOLDER
 
 
 class TestingConfig(Config):

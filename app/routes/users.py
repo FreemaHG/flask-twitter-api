@@ -3,8 +3,8 @@ from flask_restful import Resource
 from flask import request
 from loguru import logger
 
-from .services.user import UserService
-from .schemas import UserSchema
+from ..services.user import UserService
+from ..schemas.users import UserSchema
 
 
 class UserData(Resource):

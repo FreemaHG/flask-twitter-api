@@ -2,6 +2,7 @@ import os
 
 from dotenv import load_dotenv, find_dotenv
 
+
 # Функция find_dotenv возвращает путь к файлу .env, если такой есть
 if not find_dotenv():
     # Если файла с настройками бота нет, завершается работа python с соответствующим сообщением

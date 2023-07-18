@@ -22,9 +22,11 @@ class Tweet(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     images = db.relationship('Image', backref='tweet', cascade='all, delete-orphan')
     tags = db.relationship(
-        'tags',
+        'Tag',
         secondary=tags,
-        backref=db.backref('tweets', lazy='selectin')
+        backref=db.backref('tweets', lazy='selectin'),
+        primaryjoin=id == tags.c.tweet_id,
+        secondaryjoin=id == tags.c.tag_id,
     )
 
 

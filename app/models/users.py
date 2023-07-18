@@ -3,7 +3,7 @@ import datetime
 from sqlalchemy import event
 
 from ..database import db
-from ..tweets.models import Tweet
+from .tweets import Tweet
 
 
 # Вспомогательная таблица для отслеживания подписок пользователей между собой

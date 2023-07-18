@@ -2,8 +2,8 @@ from loguru import logger
 
 from sqlalchemy.orm.exc import NoResultFound
 
-from ..models import User
-from ...database import db
+from ..models.users import User
+from ..database import db
 
 
 class UserService:

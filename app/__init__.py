@@ -9,10 +9,10 @@ from .database import db
 from .settings import APP_SETTINGS
 
 
-_MIGRATION_DIR = os.path.join('app', 'migrations')  # Директория для миграций
-_ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-_TEMPLATE_FOLDER = os.path.join(_ROOT_DIR, '/templates')
-_STATIC_FOLDER = os.path.join(_ROOT_DIR, '/static')
+MIGRATION_DIR = os.path.join('app', 'migrations')  # Директория для миграций
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+TEMPLATE_FOLDER = os.path.join(ROOT_DIR, 'templates')
+STATIC_FOLDER = os.path.join(ROOT_DIR, 'static')
 
 migrate = Migrate()
 
@@ -21,7 +21,7 @@ def create_app():
     """
     Функция, отвечающая за создание экземпляра приложения
     """
-    app = Flask(__name__, template_folder=_TEMPLATE_FOLDER, static_folder=_STATIC_FOLDER)
+    app = Flask(__name__, template_folder=TEMPLATE_FOLDER, static_folder=STATIC_FOLDER)
 
     # app.config.from_object('config.DevelopmentConfig')
     app.config.from_object(APP_SETTINGS)  # Загружаем конфигурацию (подгруженную из .env) из файла настроек
@@ -32,7 +32,7 @@ def create_app():
     # migrate = Migrate(app, db)
 
     # Инициализация репозитория для миграций в корне проекта
-    migrate.init_app(app, db, directory=_MIGRATION_DIR, render_as_batch=True)
+    migrate.init_app(app, db, directory=MIGRATION_DIR, render_as_batch=True)
 
     api = Api(app)
 

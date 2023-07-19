@@ -47,5 +47,3 @@ class UserDataForId(Resource):
                 return {'result': True, 'user': data}, 200
 
         return 'Страница не найдена', 404
-
-

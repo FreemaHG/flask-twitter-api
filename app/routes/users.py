@@ -1,49 +1,36 @@
 from flask_restful import Resource
-
-from flask import request
 from loguru import logger
 
 from ..services.user import UserService
 from ..schemas.users import UserSchema
+from ..utils.token import token_required
 
 
 class UserData(Resource):
 
-    def get(self):
+    @token_required
+    def get(self, current_user, user_id=None):
         """
         Возврат данных о текущем пользователе
         """
-        api_key = request.headers.get('api-key')
-        logger.info(f'api_key: {api_key}')
 
-        if api_key:
-            user = UserService.get_user_for_key(api_key=api_key)
+        if user_id is None:
+            logger.debug('id пользователя не передан')
+            data = UserSchema().dump(current_user)
 
-            if user:
-                data = UserSchema().dump(user)
-                return {'result': True, 'user': data}, 200
-            else:
-                return 'Нет данных о пользователе', 404
+            return {'result': True, 'user': data}, 200
 
-        else:
-            logger.error('Не найден api-key в http-header')
-            return 'Ошибка в авторизации', 401
+        user = UserService.get_user_for_id(user_id=user_id)
 
+        if user:
+            logger.info('Пользователь найден')
+            data = UserSchema().dump(user)
 
-class UserDataForId(Resource):
+            return {'result': True, 'user': data}, 200
 
-    def get(self, user_id):
-        """
-        Возврат данных о текущем пользователе
-        """
-        # user_id = request.args.get('id')
-        logger.info(f'user_id: {user_id}')
+        logger.error(f'Пользователь с id - {user_id} не найден')
 
-        if user_id:
-            user = UserService.get_user_for_id(user_id=user_id)
-
-            if user:
-                data = UserSchema().dump(user)
-                return {'result': True, 'user': data}, 200
-
-        return 'Страница не найдена', 404
+        return {
+                'result': False,
+                'msg': 'Sorry. This user does not exist.',
+            }, 404

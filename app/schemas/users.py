@@ -1,4 +1,5 @@
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, validates, post_load
+# from flasgger import Schema, fields, ValidationError
 
 
 class UserSchema(Schema):
@@ -6,6 +7,11 @@ class UserSchema(Schema):
     name = fields.Str(required=True)  # Обязательное поле
     followers = fields.List(fields.Nested('UserSchema', only=('id', 'name')))  # Подписчики
     following = fields.List(fields.Nested('UserSchema', only=('id', 'name')))  # Подписки
+
+    # @validates('name')
+    # def validate_name(self, name: str) -> None:
+    #     if len(name) > 60:
+    #         raise ValidationError(f'Имя пользователя не должно превышать 60 символов')
 
 
 # class ResponseSchema(Schema):

@@ -1,8 +1,9 @@
 from flask import send_from_directory
-from app import create_app, STATIC_FOLDER
+from app import create_app, create_api, STATIC_FOLDER
 
 
 app = create_app()
+rest_api = create_api(app)
 
 
 @app.route("/<path:path>")

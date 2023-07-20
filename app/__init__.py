@@ -3,7 +3,7 @@ from loguru import logger
 
 from flask import Flask
 from flask_migrate import Migrate
-from flask_restful import Api
+from flask_restful import Api, reqparse
 
 from .database import db
 from .settings import APP_SETTINGS
@@ -34,8 +34,6 @@ def create_app():
     # Инициализация репозитория для миграций в корне проекта
     migrate.init_app(app, db, directory=MIGRATION_DIR, render_as_batch=True)
 
-    api = Api(app)
-
     # Импортируем все модели перед инициализацией БД
     from .models.users import User
     from .models.tweets import Tweet, Tag, Image, Like, Comment
@@ -44,9 +42,25 @@ def create_app():
     with app.test_request_context():
         db.create_all()
 
-    from .routes.users import UserData, UserDataForId
-
-    api.add_resource(UserData, '/api/users/me', endpoint='personal-data')
-    api.add_resource(UserDataForId, '/api/users/<int:user_id>', endpoint='user-data')
-
     return app
+
+
+def create_api(app: Flask):
+    """
+    Функция, отвечающая за создание экземпляра rest_api
+    """
+    rest_api = Api(app)
+
+    parser = reqparse.RequestParser()
+    parser.add_argument('api-key', location='headers')
+
+    from .routes.users import UserData
+
+    rest_api.add_resource(
+        UserData,
+        '/api/users/me',
+        '/api/users/<int:user_id>',
+        endpoint='personal-data'
+    )
+
+    return rest_api

@@ -1,0 +1,5 @@
+-r base.txt
+loguru==0.7.0
+flasgger==0.9.7.1
+apispec-webframeworks==0.5.2
+flask-debugtoolbar

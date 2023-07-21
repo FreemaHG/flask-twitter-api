@@ -1,49 +1,57 @@
 import os
+from loguru import logger
 
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_restful import Api, reqparse
+
+from .database import db
+from .settings import APP_SETTINGS
 
 
-# Папка для хранения миграций
-MIGRATION_DIR = os.path.join('app', 'migrations')
-IMAGES_FOLDER = os.path.join('static', 'img')
+MIGRATION_DIR = os.path.join('app', 'migrations')  # Директория для миграций
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+TEMPLATE_FOLDER = os.path.join(ROOT_DIR, 'templates')
+STATIC_FOLDER = os.path.join(ROOT_DIR, 'static')
 
-db = SQLAlchemy()
 migrate = Migrate()
 
 
-def create_app(test_config=None):
+def create_app():
     """
     Функция, отвечающая за создание экземпляра приложения
     """
+    app = Flask(__name__, template_folder=TEMPLATE_FOLDER, static_folder=STATIC_FOLDER)
 
-    app = Flask(__name__, instance_relative_config=True)
+    # app.config.from_object('config.DevelopmentConfig')
+    app.config.from_object(APP_SETTINGS)  # Загружаем конфигурацию (подгруженную из .env) из файла настроек
 
-    app.config.from_mapping(
-        SECRET_KEY='dev',  # FIXME Обязательно изменить после завершения разработки API
-        SQLALCHEMY_DATABASE_URI='sqlite:///project.db',
-        UPLOAD=IMAGES_FOLDER,  # Для загрузки изображений (аватары и изображения к твитам)
-    )
+    # Инициализация БД
+    db.init_app(app)
 
-    if test_config is None:
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        app.config.from_mapping(test_config)
+    # migrate = Migrate(app, db)
 
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
-
-    db.init_app(app)  # Инициализация БД
-    migrate.init_app(app, db, directory=MIGRATION_DIR)  # Инициализация репозитория для миграций в корне проекта
+    # Инициализация репозитория для миграций в корне проекта
+    migrate.init_app(app, db, directory=MIGRATION_DIR, render_as_batch=True)
 
     # Импортируем все модели перед инициализацией БД
-    from .models.user import User
+    from .models.users import User
+    from .models.tweets import Tweet, Tag, Image, Like, Comment
 
     # Создание БД
-    with app.app_context():
+    with app.test_request_context():
         db.create_all()
 
     return app
+
+
+def create_api(app):
+    """
+    Функция, отвечающая за создание экземпляра rest_api
+    """
+    rest_api = Api(app)
+
+    parser = reqparse.RequestParser()
+    parser.add_argument('api-key', location='headers')
+
+    return rest_api

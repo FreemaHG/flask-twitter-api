@@ -35,7 +35,7 @@ class Image(db.Model):
     Модель для хранения данных об изображениях для твитов
     """
     id = db.Column(db.Integer, primary_key=True)
-    tweet_id = db.Column(db.Integer, db.ForeignKey('tweet.id'))
+    tweet_id = db.Column(db.Integer, db.ForeignKey('tweet.id'), nullable=True)
     path = db.Column(db.String, nullable=True)
 
 

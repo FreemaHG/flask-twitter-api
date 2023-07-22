@@ -1,7 +1,7 @@
 import os
 
 
-_IMAGES_FOLDER = os.path.join('app', 'static', 'img')  # Директория для аватаров и изображений к твитам
+_IMAGES_FOLDER = os.path.join('static', 'img')  # Директория для аватаров и изображений к твитам
 
 
 class Config(object):
@@ -14,6 +14,7 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///project.db'  # Местоположение БД
     SQLALCHEMY_TRACK_MODIFICATIONS = False  # Отключаем систему событий Flask-SQLAlchemy
     UPLOAD = _IMAGES_FOLDER
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}  # Разрешенные форматы для загрузки изображений
 
 
 class ProductionConfig(Config):

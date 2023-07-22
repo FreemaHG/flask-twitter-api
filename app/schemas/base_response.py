@@ -1,7 +1,5 @@
 from marshmallow import Schema, fields, validates, post_load, ValidationError
 
-from .users import UserSchema
-
 
 class ResponseSchema(Schema):
     """
@@ -17,10 +15,3 @@ class ErrorResponseSchema(ResponseSchema):
     result = fields.Bool(default=False)
     error_type = fields.Str(default='404')
     error_message = fields.Str()
-
-
-class UserResponseSchema(ResponseSchema):
-    """
-    Схема для вывода данных о пользователе
-    """
-    user = fields.Nested(UserSchema)

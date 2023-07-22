@@ -3,7 +3,7 @@ from flask import request
 from loguru import logger
 
 from ..services.user import UserService
-from ..schemas.response import ErrorResponseSchema
+from ..schemas.base_response import ErrorResponseSchema
 
 
 def token_required(func):
@@ -35,7 +35,7 @@ def token_required(func):
                 }
             ), 401
 
-        logger.info(f'Пользователь найден: {token}')
+        logger.info(f'Пользователь найден: id - {current_user.id}, name - {current_user.name}')
 
         return func(*args, current_user, **kwargs)
 

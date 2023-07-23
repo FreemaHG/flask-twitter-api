@@ -57,4 +57,4 @@ class TweetsList(Resource):
             return ErrorResponseSchema().dump({'error_type': '423', 'error_message': exc}), 423
 
         except NoResultFound as exc:
-            return ErrorResponseSchema().dump({'error_type': '404', 'error_message': exc}), 404
+            return ErrorResponseSchema().dump({'error_message': exc}), 404

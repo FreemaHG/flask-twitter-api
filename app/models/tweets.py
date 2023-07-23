@@ -37,6 +37,7 @@ class Image(db.Model):
     path = db.Column(db.String, nullable=True)
 
 
+# TODO Не используется!
 class Tag(db.Model):
     """
     Модель для хранения тегов для твитов
@@ -54,6 +55,7 @@ class Like(db.Model):
     tweet_id = db.Column(db.Integer, db.ForeignKey('tweet.id'))
 
 
+# TODO Не используется!
 class Comment(db.Model):
     """
     Модель для хранения комментариев к твитам

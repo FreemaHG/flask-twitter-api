@@ -32,12 +32,12 @@ class TweetResponseSchema(ResponseSchema):
     tweet_id = fields.Int()
 
 
-# class TweetOutSchema(Schema):
-#     """
-#     Схема для вывода данных о твите
-#     """
-#     id = fields.Int()
-#     content = fields.Str()
-#     attachments = fields.List(fields.Nested(ImageSchema))
-#     author = fields.Nested(UserSchema, only=('id', 'name'))
-#     likes = fields.List(fields.Nested('LikeSchema', only=('user_id', 'name')))
+class TweetListSchema(Schema):
+    """
+    Схема для вывода твитов
+    """
+    # id = fields.Int()
+    # content = fields.Str()
+    # attachments = fields.List(fields.Nested(ImageSchema))
+    # author = fields.Nested(UserSchema, only=('id', 'name'))
+    # likes = fields.List(fields.Nested('LikeSchema', only=('user_id', 'name')))

@@ -1,9 +1,9 @@
 import datetime
 
-from sqlalchemy import event
+from sqlalchemy import event, func
 
 from ..database import db
-from .tweets import Tweet
+from .tweets import Tweet, Like
 
 
 # Вспомогательная таблица для отслеживания подписок пользователей между собой
@@ -23,8 +23,9 @@ class User(db.Model):
     api_key = db.Column(db.String(60))
     password = db.Column(db.String)
     avatar = db.Column(db.String)
-    created_at = db.Column(db.String, default=datetime.datetime.now())
+    created_at = db.Column(db.DateTime, default=func.now())
     tweets = db.relationship(Tweet, backref='user', cascade='all, delete-orphan')
+    likes = db.relationship(Like, backref='user', cascade='all, delete-orphan')
 
     # Многие ко многим (подписки пользователей друг на друга)
     following = db.relationship(

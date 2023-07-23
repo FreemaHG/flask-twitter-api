@@ -18,8 +18,12 @@ class TweetsList(Resource):
         """
         Вывод твитов для текущего пользователя (твиты подписчиков)
         """
-        logger.debug(f'Вывод всех твитов для пользователя: {current_user.name}')
-        ...
+        logger.debug(f'Вывод твитов')
+        tweets = TweetsService.get_tweets(user=current_user)
+
+        # TODO Подставить данные полученных твитов в схемы и вернуть пользователю...
+
+        return {'message': 'В работе'}, 200
 
     @token_required
     def post(self, current_user: User):

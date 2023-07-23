@@ -38,7 +38,7 @@ class LikesService:
         """
 
         if not cls.check_like_tweet(tweet_id=tweet.id, user_id=user_id):
-            tweet.likes += 1
+            tweet.num_likes += 1
             like_record = Like(user_id=user_id, tweet_id=tweet.id)
             db.session.add(like_record)
             db.session.commit()
@@ -64,10 +64,10 @@ class LikesService:
             else:
                 logger.error('Запись о лайке не найдена')
 
-            tweet.likes -= 1
+            tweet.num_likes -= 1
 
-            if tweet.likes < 0:
-                tweet.likes = 0
+            if tweet.num_likes < 0:
+                tweet.num_likes = 0
 
             db.session.commit()
 

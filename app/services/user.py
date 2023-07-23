@@ -67,6 +67,10 @@ class FollowerService:
         """
         logger.debug('Проверка подписки')
 
+        if current_user is followed_user:
+            logger.error('Попытка подписки на самого себя')
+            raise PermissionError('You can not subscribe to yourself')
+
         return followed_user in current_user.following
 
     @classmethod

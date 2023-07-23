@@ -1,5 +1,7 @@
 import datetime
 
+from sqlalchemy import func
+
 from ..database import db
 
 
@@ -17,8 +19,9 @@ class Tweet(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(280), nullable=False)
-    likes = db.Column(db.Integer, default=0)
-    created_at = db.Column(db.String, default=datetime.datetime.now())
+    num_likes = db.Column(db.Integer, default=0)
+    likes = db.relationship('Like', backref='tweet', cascade='all, delete-orphan')
+    created_at = db.Column(db.DateTime, default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     images = db.relationship('Image', backref='tweet', cascade='all, delete-orphan')
     tags = db.relationship(

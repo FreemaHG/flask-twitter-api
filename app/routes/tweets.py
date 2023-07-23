@@ -2,12 +2,13 @@ from flask import request
 from flask_restful import Resource
 from marshmallow import ValidationError
 from loguru import logger
+from sqlalchemy.exc import NoResultFound
 
 from ..utils.token import token_required
 from ..services.tweets import TweetsService
 from ..models.users import User
 from ..schemas.tweets import TweetResponseSchema, TweetInSchema
-from ..schemas.base_response import ErrorResponseSchema
+from ..schemas.base_response import ErrorResponseSchema, ResponseSchema
 
 
 class TweetsList(Resource):
@@ -41,6 +42,19 @@ class TweetsList(Resource):
 
             return ErrorResponseSchema().dump({'error_type': 400, 'error_message': error_message}), 400
 
+    @token_required
+    def delete(self, current_user: User, tweet_id: int):
+        """
+        Удаление твита
+        """
+        logger.debug('Удаление твита')
 
+        try:
+            TweetsService.delete_tweet(user_id=current_user.id, tweet_id=tweet_id)
+            return ResponseSchema().dump({'result': True}), 200
 
+        except PermissionError as exc:
+            return ErrorResponseSchema().dump({'error_type': '423', 'error_message': exc}), 423
 
+        except NoResultFound as exc:
+            return ErrorResponseSchema().dump({'error_type': '404', 'error_message': exc}), 404

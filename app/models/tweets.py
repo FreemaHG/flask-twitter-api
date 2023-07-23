@@ -4,8 +4,8 @@ from ..database import db
 
 
 # Вспомогательная таблица для связи твитов и тегов
-tags = db.Table(
-    'tags',
+tweet_to_tag = db.Table(
+    'tweet_to_tag',
     db.Column('tweet_id', db.ForeignKey('tweet.id'), primary_key=True),
     db.Column('tag_id', db.ForeignKey('tag.id'), primary_key=True)
 )
@@ -23,10 +23,8 @@ class Tweet(db.Model):
     images = db.relationship('Image', backref='tweet', cascade='all, delete-orphan')
     tags = db.relationship(
         'Tag',
-        secondary=tags,
+        secondary=tweet_to_tag,
         backref=db.backref('tweets', lazy='selectin'),
-        primaryjoin=id == tags.c.tweet_id,
-        secondaryjoin=id == tags.c.tag_id,
     )
 
 

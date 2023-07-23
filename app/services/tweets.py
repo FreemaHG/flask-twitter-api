@@ -1,9 +1,11 @@
 from typing import Dict, List
+from sqlalchemy.orm.exc import NoResultFound
 from loguru import logger
 
 from ..database import db
 from ..models.tweets import Tweet, Image, Like, Comment
 from ..services.images import ImageService
+from ..utils.media import delete_image
 
 
 class TweetsService:
@@ -29,3 +31,35 @@ class TweetsService:
             ImageService.update_images(tweet_media_ids=data['tweet_media_ids'], tweet_id=new_tweet.id)
 
         return new_tweet
+
+    @classmethod
+    def delete_tweet(cls, user_id: int, tweet_id: int) -> bool | None:
+        """
+        Метод для удаления твита с его изображениями
+        :param user_id: id пользователя
+        :param tweet_id: id удаляемого твита
+        :return: True / False
+        """
+        logger.debug(f'Удаление твита: id - {tweet_id}')
+        tweet = db.session.execute(db.select(Tweet).where(Tweet.id == tweet_id)).scalar_one_or_none()
+
+        if tweet:
+            logger.debug('Твит найден')
+
+            if tweet.user_id == user_id:
+                logger.debug('Удаление твита автором')
+
+                delete_image(tweet_id=tweet.id)  # Удаляем изображения твита
+
+                db.session.delete(tweet)
+                db.session.commit()
+
+                return True
+
+            else:
+                logger.error('Запрос на удаление чужого твита')
+                raise PermissionError('The tweet that is being accessed is locked')
+
+        else:
+            logger.error('Твит не найден')
+            raise NoResultFound('Tweet not found')

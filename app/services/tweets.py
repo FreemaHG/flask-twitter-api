@@ -1,10 +1,11 @@
+from itertools import chain
 from typing import Dict, List
 from sqlalchemy.orm.exc import NoResultFound
 from loguru import logger
 
 from ..database import db
-from ..models.tweets import Tweet, Image, Like, Comment
-from ..models.users import User, user_to_user
+from ..models.tweets import Tweet
+from ..models.users import User
 from ..services.images import ImageService
 from ..utils.media import delete_image
 
@@ -12,30 +13,21 @@ from ..utils.media import delete_image
 class TweetsService:
 
     @classmethod
-    def get_tweets(cls, user: User):
+    def get_tweets(cls, user: User) -> List[Tweet]:
+        """
+        Метод для вывода последних твитов у подписанных пользователей
+        :param user: объект текущего пользователя
+        :return: список с твитами
+        """
 
         tweets = db.session.execute(
             db.select(Tweet)
             .filter(Tweet.user_id.in_(user.id for user in user.following))
             .order_by(Tweet.created_at.desc())
-        ).scalars()
+        ).all()
 
-        # TODO Для проверки
-        for num, tweet in enumerate(tweets):
-            logger.warning(f'{num + 1} твит')
-            logger.info(f'id: {tweet.id}')
-            logger.info(f'content: {tweet.body}')
-            logger.info('attachments:')
-
-            for image in tweet.images:
-                logger.info(f'      {image.path}\n')
-
-            logger.info(f'author: id - {tweet.user.id}, name - {tweet.user.name}')
-            logger.info('likes:')
-
-            for like in tweet.likes:
-                logger.info(f'      user_id: {like.user_id}')
-                logger.info(f'      name: {like.user.name}')
+        # Очистка результатов от вложенных кортежей
+        tweets = list(chain(*tweets))
 
         return tweets
 

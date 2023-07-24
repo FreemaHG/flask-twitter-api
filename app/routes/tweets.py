@@ -7,7 +7,7 @@ from sqlalchemy.exc import NoResultFound
 from ..utils.token import token_required
 from ..services.tweets import TweetsService
 from ..models.users import User
-from ..schemas.tweets import TweetResponseSchema, TweetInSchema
+from ..schemas.tweets import TweetResponseSchema, TweetInSchema, TweetListSchema
 from ..schemas.base_response import ErrorResponseSchema, ResponseSchema
 
 
@@ -21,9 +21,7 @@ class TweetsList(Resource):
         logger.debug(f'Вывод твитов')
         tweets = TweetsService.get_tweets(user=current_user)
 
-        # TODO Подставить данные полученных твитов в схемы и вернуть пользователю...
-
-        return {'message': 'В работе'}, 200
+        return TweetListSchema().dump({'tweets': tweets}), 200
 
     @token_required
     def post(self, current_user: User):

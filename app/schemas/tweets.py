@@ -3,6 +3,9 @@ from typing import Dict
 from marshmallow import Schema, fields, validates, post_load, ValidationError
 
 from .base_response import ResponseSchema
+from .images import ImageSchema, ImageOutSchema
+from .users import UserSchema
+from .likes import LikeSchema
 
 
 class TweetInSchema(Schema):
@@ -32,12 +35,16 @@ class TweetResponseSchema(ResponseSchema):
     tweet_id = fields.Int()
 
 
-class TweetListSchema(Schema):
+class TweetOutSchema(Schema):
+    id = fields.Int()
+    body = fields.Str(data_key='content')
+    images = fields.Pluck(ImageOutSchema, 'path', many=True, data_key='attachments')
+    user = fields.Nested(UserSchema, only=('id', 'name'), data_key='author')
+    likes = fields.List(fields.Nested(LikeSchema, only=('user_id', 'user.name')))
+
+
+class TweetListSchema(ResponseSchema):
     """
     Схема для вывода твитов
     """
-    # id = fields.Int()
-    # content = fields.Str()
-    # attachments = fields.List(fields.Nested(ImageSchema))
-    # author = fields.Nested(UserSchema, only=('id', 'name'))
-    # likes = fields.List(fields.Nested('LikeSchema', only=('user_id', 'name')))
+    tweets = fields.List(fields.Nested(TweetOutSchema))

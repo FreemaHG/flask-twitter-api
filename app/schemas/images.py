@@ -1,7 +1,7 @@
 from typing import Dict
 
 from flask import current_app
-from marshmallow import Schema, fields, post_load, ValidationError, validates_schema
+from marshmallow import Schema, fields, ValidationError, validates_schema
 from marshmallow.fields import Field
 from werkzeug.datastructures import FileStorage
 from loguru import logger
@@ -41,3 +41,10 @@ class ImageResponseSchema(ResponseSchema):
     Схема для вывода id изображения после публикации твита
     """
     media_id = fields.Int()
+
+
+class ImageOutSchema(Schema):
+    """
+    Схема для вывода ссылки на изображения к твитам
+    """
+    path = fields.Str()

@@ -16,7 +16,7 @@ class TweetsList(Resource):
     @token_required
     def get(self, current_user: User):
         """
-        Вывод твитов для текущего пользователя (твиты подписчиков)
+        Вывод твитов для текущего пользователя (последние твиты подписчиков)
         """
         logger.debug(f'Вывод твитов')
         tweets = TweetsService.get_tweets(user=current_user)
@@ -29,6 +29,7 @@ class TweetsList(Resource):
         Добавление твита
         """
         logger.debug('Добавление твита')
+
         data = request.json
         data['user_id'] = current_user.id
 
@@ -53,7 +54,7 @@ class TweetsList(Resource):
 
         try:
             TweetsService.delete_tweet(user_id=current_user.id, tweet_id=tweet_id)
-            return ResponseSchema().dump({'result': True}), 200
+            return ResponseSchema().dump({}), 200
 
         except PermissionError as exc:
             return ErrorResponseSchema().dump({'error_type': '423', 'error_message': exc}), 423

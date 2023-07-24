@@ -1,5 +1,3 @@
-import datetime
-
 from sqlalchemy import event, func
 
 from ..database import db

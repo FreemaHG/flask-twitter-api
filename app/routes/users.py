@@ -16,7 +16,6 @@ class UserData(Resource):
         """
         Возврат данных о пользователе
         """
-
         if user_id is None:
             logger.warning('id пользователя не передан, возврат данных о текущем пользователе')
 
@@ -44,7 +43,7 @@ class Followers(Resource):
         """
         try:
             FollowerService.create_follower(current_user=current_user, followed_user_id=user_id)
-            return ResponseSchema().dump({'result': True}), 201
+            return ResponseSchema().dump({}), 201
 
         except NoResultFound as exc:
             return ErrorResponseSchema().dump({'error_message': exc}), 404
@@ -61,7 +60,7 @@ class Followers(Resource):
         """
         try:
             FollowerService.delete_follower(current_user=current_user, followed_user_id=user_id)
-            return ResponseSchema().dump({'result': True}), 201
+            return ResponseSchema().dump({}), 201
 
         except NoResultFound as exc:
             return ErrorResponseSchema().dump({'error_message': exc}), 404

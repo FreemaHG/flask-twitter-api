@@ -13,20 +13,29 @@ class Config(object):
     SECRET_KEY = 'dev'  # Секретный ключ, н-р, для подписи cookie
     SQLALCHEMY_DATABASE_URI = 'sqlite:///project.db'  # Местоположение БД
     SQLALCHEMY_TRACK_MODIFICATIONS = False  # Отключаем систему событий Flask-SQLAlchemy
-    UPLOAD = _IMAGES_FOLDER
+    UPLOAD = _IMAGES_FOLDER  # Директория для загрузки файлов
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}  # Разрешенные форматы для загрузки изображений
 
 
 class ProductionConfig(Config):
+    """
+    Конфигурация для рабочей среды
+    """
     DEBUG = False
     SECRET_KEY = os.urandom(32)  # Генерируем случайный ключ
 
 
 class DevelopmentConfig(Config):
+    """
+    Конфигурация для разработки
+    """
     DEVELOPMENT = True
     DEBUG = True
 
 
 class TestingConfig(Config):
+    """
+    Конфигурация для тестирования
+    """
     DATABASE_URI = 'sqlite:///:memory:'
     TESTING = True

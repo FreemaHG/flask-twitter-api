@@ -7,15 +7,18 @@ from ..database import db
 from ..models.tweets import Tweet
 from ..models.users import User
 from ..services.images import ImageService
-from ..utils.media import delete_image
+from ..utils.media import delete_images
 
 
 class TweetsService:
+    """
+    Сервис для добавления, удаления и вывода твитов
+    """
 
     @classmethod
     def get_tweets(cls, user: User) -> List[Tweet]:
         """
-        Метод для вывода последних твитов у подписанных пользователей
+        Вывод последних твитов подписанных пользователей
         :param user: объект текущего пользователя
         :return: список с твитами
         """
@@ -34,20 +37,18 @@ class TweetsService:
     @classmethod
     def create_tweet(cls, data: Dict) -> Tweet:
         """
-        Метод для сохранения нового твита
+        Создание нового твита
         :param data: словарь с данными
         :return: объект нового твита
         """
         logger.debug('Сохранение твита в БД')
 
-        new_tweet = Tweet(
-            body=data['tweet_data'],
-            user_id=data['user_id'],
-        )
-
+        # Сохраняем твит
+        new_tweet = Tweet(body=data['tweet_data'], user_id=data['user_id'])
         db.session.add(new_tweet)
         db.session.commit()
 
+        # Сохраняем изображения, если есть
         if data['tweet_media_ids']:
             ImageService.update_images(tweet_media_ids=data['tweet_media_ids'], tweet_id=new_tweet.id)
 
@@ -56,7 +57,7 @@ class TweetsService:
     @classmethod
     def delete_tweet(cls, user_id: int, tweet_id: int) -> bool | None:
         """
-        Метод для удаления твита с его изображениями
+        Удаление твита и его изображений
         :param user_id: id пользователя
         :param tweet_id: id удаляемого твита
         :return: True / False
@@ -70,8 +71,9 @@ class TweetsService:
             if tweet.user_id == user_id:
                 logger.debug('Удаление твита автором')
 
-                delete_image(tweet_id=tweet.id)  # Удаляем изображения твита
+                delete_images(tweet_id=tweet.id)  # Удаляем изображения твита
 
+                # Удаляем твит
                 db.session.delete(tweet)
                 db.session.commit()
 

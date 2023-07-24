@@ -3,7 +3,7 @@ from app.urls import add_urls
 
 
 app = create_app()  # Экземпляр Flask
-rest_api = create_api(app)  # Экземпляр Api
+rest_api = create_api(app)  # Экземпляр Flask RESTApi
 rest_api = add_urls(rest_api)  # Регистрация URL
 
 

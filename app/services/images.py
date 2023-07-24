@@ -1,7 +1,6 @@
-from typing import Dict, List
+from typing import List
 
-from sqlalchemy.exc import NoResultFound
-from sqlalchemy import func, select, update
+from sqlalchemy import update
 from werkzeug.datastructures import FileStorage
 from loguru import logger
 
@@ -11,28 +10,32 @@ from ..utils.media import save_image
 
 
 class ImageService:
+    """
+    Сервис для сохранения изображений при добавлении нового твита
+    """
 
     @classmethod
     def save_image(cls, images: FileStorage) -> int:
         """
-        Метод для сохранения изображения к твиту
-        :param images: объект изображения
+        Сохранение изображения (без привязки к твиту)
+        :param images: файл
         :return: id изображения
         """
-        path = save_image(image=images)
-        image = Image(path=path)
+        logger.debug('Сохранение изображения')
 
-        db.session.add(image)
-        db.session.commit()
+        path = save_image(image=images)  # Сохранение изображения в файловой системе
+        image = Image(path=path)  # Создание экземпляра изображения
+        db.session.add(image)  # Добавление изображения в БД
+        db.session.commit()  # Сохранение в БД
 
         return image.id
 
     @classmethod
     def update_images(cls, tweet_media_ids: List[int], tweet_id: int) -> None:
         """
-        Метод для обновления изображений (сохранение ссылки - id твита)
+        Обновление изображений (привязка к твиту)
         :param tweet_media_ids: список с id изображений
-        :param tweet_id: id твита, к которому принадлежат изображения
+        :param tweet_id: id твита для привязки изображений
         :return: None
         """
         logger.debug(f'Обновление изображений по id: {tweet_media_ids}, tweet_id: {tweet_id}')

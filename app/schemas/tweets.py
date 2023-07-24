@@ -1,9 +1,7 @@
-from typing import Dict
-
-from marshmallow import Schema, fields, validates, post_load, ValidationError
+from marshmallow import Schema, fields, validates, ValidationError
 
 from .base_response import ResponseSchema
-from .images import ImageSchema, ImageOutSchema
+from .images import ImageOutSchema
 from .users import UserSchema
 from .likes import LikeSchema
 
@@ -36,6 +34,9 @@ class TweetResponseSchema(ResponseSchema):
 
 
 class TweetOutSchema(Schema):
+    """
+    Схема для вывода твита, автора, вложенных изображений и данных по лайкам
+    """
     id = fields.Int()
     body = fields.Str(data_key='content')
     images = fields.Pluck(ImageOutSchema, 'path', many=True, data_key='attachments')
@@ -45,6 +46,6 @@ class TweetOutSchema(Schema):
 
 class TweetListSchema(ResponseSchema):
     """
-    Схема для вывода твитов
+    Схема для вывода списка твитов
     """
     tweets = fields.List(fields.Nested(TweetOutSchema))

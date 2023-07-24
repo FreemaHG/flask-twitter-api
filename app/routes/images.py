@@ -6,9 +6,8 @@ from loguru import logger
 from ..schemas.base_response import ErrorResponseSchema
 from ..utils.token import token_required
 from ..services.images import ImageService
-from ..models.tweets import Image
 from ..models.users import User
-from ..schemas.images import ImageSchema, ImageResponseSchema
+from ..schemas.images import ImageInSchema, ImageResponseSchema
 
 
 class AddImages(Resource):
@@ -24,8 +23,7 @@ class AddImages(Resource):
         logger.info(f'Файл: {images}')
 
         try:
-            ImageSchema().load({'file': images})
-
+            ImageInSchema().load({'file': images})
             media_id = ImageService.save_image(images=images)
 
             return ImageResponseSchema().dump({'media_id': media_id}), 201
@@ -35,5 +33,3 @@ class AddImages(Resource):
             error_message = exc.messages['_schema'][0]
 
             return ErrorResponseSchema().dump({'error_type': 422, 'error_message': error_message}), 422
-
-

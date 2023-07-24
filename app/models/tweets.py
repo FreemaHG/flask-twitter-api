@@ -33,7 +33,7 @@ class Tweet(db.Model):
 
 class Image(db.Model):
     """
-    Модель для хранения данных об изображениях для твитов
+    Модель для хранения изображений
     """
     id = db.Column(db.Integer, primary_key=True)
     tweet_id = db.Column(db.Integer, db.ForeignKey('tweet.id'), nullable=True)
@@ -43,7 +43,7 @@ class Image(db.Model):
 # TODO Не используется!
 class Tag(db.Model):
     """
-    Модель для хранения тегов для твитов
+    Модель для хранения тегов
     """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60), nullable=False)

@@ -1,5 +1,3 @@
-from typing import Dict
-
 from flask import current_app
 from marshmallow import Schema, fields, ValidationError, validates_schema
 from marshmallow.fields import Field
@@ -10,21 +8,18 @@ from .base_response import ResponseSchema
 from ..utils.media import allowed_image
 
 
-class ImageSchema(Schema):
+class ImageInSchema(Schema):
     """
-    Схема для сохранения изображения к твиту
+    Схема для добавления изображения к твиту
     """
     file = Field(metadata={'type': 'string', 'format': 'byte'}, allow_none=True, required=True)
 
     @validates_schema
     def validate_uploaded_file(self, in_data, **kwargs):
         """
-        Проверка расширения изображения
+        Проверка расширения загружаемого изображения
         """
         file: FileStorage = in_data.get('file', None)
-
-        logger.debug(f'Файл (название): {file.filename}')
-        logger.debug(f'Файл (объект): {file}')
 
         if file is None:
             raise ValidationError(f'The image is not loaded')
@@ -45,6 +40,6 @@ class ImageResponseSchema(ResponseSchema):
 
 class ImageOutSchema(Schema):
     """
-    Схема для вывода ссылки на изображения к твитам
+    Схема для вывода ссылки на изображения при отображении твитов
     """
     path = fields.Str()

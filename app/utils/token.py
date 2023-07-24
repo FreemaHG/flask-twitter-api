@@ -8,12 +8,11 @@ from ..schemas.base_response import ErrorResponseSchema
 
 def token_required(func):
     """
-    Функция-декоратор для поиска пользователя в БД по api-key в header
+    Функция-декоратор для поиска пользователя в БД по api-key из header
     """
-
     @wraps(func)
     def decorator(*args, **kwargs):
-        token = request.headers.get('api-key', None)
+        token = request.headers.get('api-key', None)  # Извлекаем api-key из header запроса
 
         if token is None:
             logger.error('api_key не передан в header')
@@ -25,7 +24,7 @@ def token_required(func):
             ), 401
 
         logger.info(f'api_key: {token}')
-        current_user = UserService.get_user_for_key(token=token)
+        current_user = UserService.get_user_for_key(token=token)  # Поиск пользователя в БД по api-key
 
         if current_user is None:
             return ErrorResponseSchema().dump(
@@ -37,6 +36,7 @@ def token_required(func):
 
         logger.info(f'Пользователь найден: id - {current_user.id}, name - {current_user.name}')
 
+        # Возвращаем объект текущего пользователя из БД
         return func(*args, current_user, **kwargs)
 
     return decorator

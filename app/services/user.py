@@ -7,11 +7,14 @@ from ..database import db
 
 
 class UserService:
+    """
+    Сервис для вывода данных о пользователе
+    """
 
     @classmethod
     def get_user_for_key(cls, token: str) -> User | None:
         """
-        Метод ищет в БД и возвращает объект пользователя по переданному api-key
+        Возврат объекта пользователя по api-key
         :param token: api-ключ пользователя
         :return: объект пользователя / False
         """
@@ -22,7 +25,7 @@ class UserService:
     @classmethod
     def get_user_for_id(cls, user_id: int) -> User | None:
         """
-        Метод ищет в БД и возвращает объект пользователя по переданному id
+        Возврат объекта пользователя по id
         :param user_id: id пользователя
         :return: объект пользователя / False
         """
@@ -32,11 +35,14 @@ class UserService:
 
 
 class FollowerService:
+    """
+    Сервис для оформления, удаления и проверки подписок пользователей друг на друга
+    """
 
     @classmethod
     def create_follower(cls, current_user: User, followed_user_id: int) -> None:
         """
-        Метод для создания подписки на пользователя по переданному id
+        Создание подписки на пользователя по id
         :param current_user: объект текущего пользователя
         :param followed_user_id: id пользователя для подписки
         :return: None
@@ -60,10 +66,10 @@ class FollowerService:
     @classmethod
     def check_follower(cls, current_user: User, followed_user: User) -> bool:
         """
-        Метод для проверки подписки
+        Проверка подписки
         :param current_user: объект текущего пользователя
         :param followed_user: объект пользователя для подписки
-        :return: True - если есть подписки / False - если нет
+        :return: True - подписка / False - нет подписки
         """
         logger.debug('Проверка подписки')
 
@@ -76,7 +82,7 @@ class FollowerService:
     @classmethod
     def delete_follower(cls, current_user: User, followed_user_id: int) -> None:
         """
-        Метод для отмены подписки на пользователя по переданному id
+        Отмена подписки на пользователя по id
         :param current_user: объект текущего пользователя
         :param followed_user_id: id пользователя для отписки
         :return: None

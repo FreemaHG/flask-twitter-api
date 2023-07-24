@@ -1,16 +1,18 @@
 from loguru import logger
-from sqlalchemy.orm import Session
 
 from ..models.tweets import Tweet, Like
 from ..database import db
 
 
 class LikesService:
+    """
+    Сервис для добавления, удаления и проверки лайков
+    """
 
     @classmethod
     def get_tweet(cls, tweet_id: int) -> Tweet | None:
         """
-        Метод для получения твита по переданному id
+        Возврат твита по id
         :param tweet_id: id твита
         :return: объект твита / None
         """
@@ -19,9 +21,10 @@ class LikesService:
         return db.session.execute(db.select(Tweet).where(Tweet.id == tweet_id)).scalar_one_or_none()
 
     @classmethod
-    def check_like_tweet(cls, tweet_id: int, user_id: int):
+    def check_like_tweet(cls, tweet_id: int, user_id: int) -> Like | None:
         """
-        Проверка, что данный пользователь еще не ставил лайк твиту
+        Проверка лайка (метод возвращает запись о лайке, проверяя тем самым, ставил ли пользователь лайк
+        указанному твиту)
         :param tweet_id: id твита
         :param user_id: id пользователя
         """
@@ -31,15 +34,15 @@ class LikesService:
     @classmethod
     def like_tweet(cls, tweet: Tweet, user_id: int) -> None:
         """
-        Метод отмечает лайк для переданного твита, изменяет кол-во лайков
+        Сохранение лайка твиту с изменением счетчика лайков твита
         :param tweet: объект твита
         :param user_id: id пользователя
         :return: None
         """
 
         if not cls.check_like_tweet(tweet_id=tweet.id, user_id=user_id):
-            tweet.num_likes += 1
-            like_record = Like(user_id=user_id, tweet_id=tweet.id)
+            tweet.num_likes += 1  # Увеличиваем счетчик с лайками
+            like_record = Like(user_id=user_id, tweet_id=tweet.id)  # Создаем запись о лайке
             db.session.add(like_record)
             db.session.commit()
 
@@ -50,7 +53,7 @@ class LikesService:
     @classmethod
     def delete_like(cls, tweet: Tweet, user_id: int) -> None:
         """
-        Удаление лайка с твита
+        Удаление лайка
         :param tweet: объект твита
         :param user_id: id пользователя
         :return: None
@@ -59,17 +62,18 @@ class LikesService:
             like_record = db.session.execute(
                 db.select(Like).where(Like.user_id == user_id, Like.tweet_id == tweet.id)).scalar_one_or_none()
 
-            if like_record:
-                db.session.delete(like_record)
-            else:
+            if not like_record:
                 logger.error('Запись о лайке не найдена')
 
-            tweet.num_likes -= 1
+            else:
+                db.session.delete(like_record)  # Удаляем лайк
+                tweet.num_likes -= 1  # Уменьшаем счетчик лайков твита
 
-            if tweet.num_likes < 0:
-                tweet.num_likes = 0
+                # Проверка, чтобы лайки не уходили в минус
+                if tweet.num_likes < 0:
+                    tweet.num_likes = 0
 
-            db.session.commit()
+                db.session.commit()
 
         else:
             logger.error('Пользователь еще не ставил лайк данному твиту')

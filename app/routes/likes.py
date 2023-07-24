@@ -9,6 +9,8 @@ from ..schemas.base_response import ErrorResponseSchema, ResponseSchema
 
 class LikesRoute(Resource):
 
+    _not_found_message = 'Tweet not found'
+
     @token_required
     def post(self, current_user: User, tweet_id: int):
         """
@@ -21,17 +23,14 @@ class LikesRoute(Resource):
         if tweet:
             try:
                 LikesService.like_tweet(tweet=tweet, user_id=current_user.id)
-                return ResponseSchema().dump({'result': True}), 201
+                return ResponseSchema().dump({}), 201
 
             except PermissionError as exc:
                 return ErrorResponseSchema().dump({'error_type': '423', 'error_message': exc}), 423
 
         logger.error('Твит не найден')
 
-        return ErrorResponseSchema().dump({
-            'error_type': '404',
-            'error_message': 'Tweet not found'
-        }), 404
+        return ErrorResponseSchema().dump({'error_message': self._not_found_message}), 404
 
     @token_required
     def delete(self, current_user: User, tweet_id: int):
@@ -45,14 +44,11 @@ class LikesRoute(Resource):
         if tweet:
             try:
                 LikesService.delete_like(tweet=tweet, user_id=current_user.id)
-                return ResponseSchema().dump({'result': True}), 201
+                return ResponseSchema().dump({}), 201
 
             except PermissionError as exc:
                 return ErrorResponseSchema().dump({'error_type': '423', 'error_message': exc}), 423
 
         logger.error('Твит не найден')
 
-        return ErrorResponseSchema().dump({
-            'error_type': '404',
-            'error_message': 'Tweet not found'
-        }), 404
+        return ErrorResponseSchema().dump({'error_message': self._not_found_message}), 404

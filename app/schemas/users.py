@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, validates, post_load, ValidationError
+from marshmallow import Schema, fields, validates, ValidationError
 
 # from flasgger import Schema, fields, ValidationError
 
@@ -23,7 +23,7 @@ class UserSchema(Schema):
 
         if len(name) > _limit:
             raise ValidationError(
-                f'Имя пользователя не должно превышать {_limit} символов. Текущее значение: {len(name)}'
+                f'The username must not exceed {_limit} characters. Current value: {len(name)}'
             )
 
 

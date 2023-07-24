@@ -1,5 +1,4 @@
 import os
-from loguru import logger
 
 from flask import Flask
 from flask_migrate import Migrate
@@ -17,9 +16,9 @@ STATIC_FOLDER = os.path.join(ROOT_DIR, 'static')
 migrate = Migrate()
 
 
-def create_app():
+def create_app() -> Flask:
     """
-    Функция, отвечающая за создание экземпляра приложения
+    Функция создает и возвращает экземпляр приложения Flask
     """
     app = Flask(__name__, template_folder=TEMPLATE_FOLDER, static_folder=STATIC_FOLDER)
 
@@ -45,11 +44,13 @@ def create_app():
     return app
 
 
-def create_api(app):
+def create_api(app: Flask) -> Api:
     """
-    Функция, отвечающая за создание экземпляра rest_api
+    Функция возвращает экземпляр Flask RESTApi
+    :param app: экземпляр Flask-приложения
+    :return: экземпляр Flask RESTApi
     """
-    rest_api = Api(app)
+    rest_api = Api(app, prefix='/api')
 
     parser = reqparse.RequestParser()
     parser.add_argument('api-key', location='headers')

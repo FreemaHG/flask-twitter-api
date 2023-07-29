@@ -1,7 +1,7 @@
 from loguru import logger
 
-from ..models.tweets import Tweet, Like
-from ..database import db
+from app.models.tweets import Tweet, Like
+from app.database import db
 
 
 class LikesService:
@@ -16,9 +16,11 @@ class LikesService:
         :param tweet_id: id твита
         :return: объект твита / None
         """
-        logger.debug(f'Поиск твита по id - {tweet_id}')
+        logger.debug(f"Поиск твита по id - {tweet_id}")
 
-        return db.session.execute(db.select(Tweet).where(Tweet.id == tweet_id)).scalar_one_or_none()
+        return db.session.execute(
+            db.select(Tweet).where(Tweet.id == tweet_id)
+        ).scalar_one_or_none()
 
     @classmethod
     def check_like_tweet(cls, tweet_id: int, user_id: int) -> Like | None:
@@ -29,7 +31,8 @@ class LikesService:
         :param user_id: id пользователя
         """
         return db.session.execute(
-            db.select(Like).where(Like.user_id == user_id, Like.tweet_id == tweet_id)).scalar_one_or_none()
+            db.select(Like).where(Like.user_id == user_id, Like.tweet_id == tweet_id)
+        ).scalar_one_or_none()
 
     @classmethod
     def like_tweet(cls, tweet: Tweet, user_id: int) -> None:
@@ -42,13 +45,15 @@ class LikesService:
 
         if not cls.check_like_tweet(tweet_id=tweet.id, user_id=user_id):
             tweet.num_likes += 1  # Увеличиваем счетчик с лайками
-            like_record = Like(user_id=user_id, tweet_id=tweet.id)  # Создаем запись о лайке
+            like_record = Like(
+                user_id=user_id, tweet_id=tweet.id
+            )  # Создаем запись о лайке
             db.session.add(like_record)
             db.session.commit()
 
         else:
-            logger.error('Пользователь уже ставил лайк данному твиту')
-            raise PermissionError('The user has already liked this tweet')
+            logger.error("Пользователь уже ставил лайк данному твиту")
+            raise PermissionError("The user has already liked this tweet")
 
     @classmethod
     def delete_like(cls, tweet: Tweet, user_id: int) -> None:
@@ -60,10 +65,13 @@ class LikesService:
         """
         if cls.check_like_tweet(tweet_id=tweet.id, user_id=user_id):
             like_record = db.session.execute(
-                db.select(Like).where(Like.user_id == user_id, Like.tweet_id == tweet.id)).scalar_one_or_none()
+                db.select(Like).where(
+                    Like.user_id == user_id, Like.tweet_id == tweet.id
+                )
+            ).scalar_one_or_none()
 
             if not like_record:
-                logger.error('Запись о лайке не найдена')
+                logger.error("Запись о лайке не найдена")
 
             else:
                 db.session.delete(like_record)  # Удаляем лайк
@@ -76,5 +84,5 @@ class LikesService:
                 db.session.commit()
 
         else:
-            logger.error('Пользователь еще не ставил лайк данному твиту')
-            raise PermissionError('The user has not yet liked this tweet')
+            logger.error("Пользователь еще не ставил лайк данному твиту")
+            raise PermissionError("The user has not yet liked this tweet")

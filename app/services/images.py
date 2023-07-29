@@ -4,9 +4,9 @@ from sqlalchemy import update
 from werkzeug.datastructures import FileStorage
 from loguru import logger
 
-from ..database import db
-from ..models.tweets import Image
-from ..utils.media import save_image
+from app.database import db
+from app.models.tweets import Image
+from app.utils.media import save_image
 
 
 class ImageService:
@@ -21,7 +21,7 @@ class ImageService:
         :param images: файл
         :return: id изображения
         """
-        logger.debug('Сохранение изображения')
+        logger.debug("Сохранение изображения")
 
         path = save_image(image=images)  # Сохранение изображения в файловой системе
         image = Image(path=path)  # Создание экземпляра изображения
@@ -38,7 +38,11 @@ class ImageService:
         :param tweet_id: id твита для привязки изображений
         :return: None
         """
-        logger.debug(f'Обновление изображений по id: {tweet_media_ids}, tweet_id: {tweet_id}')
+        logger.debug(
+            f"Обновление изображений по id: {tweet_media_ids}, tweet_id: {tweet_id}"
+        )
 
-        db.session.execute(update(Image).where(Image.id.in_(tweet_media_ids)).values(tweet_id=tweet_id))
+        db.session.execute(
+            update(Image).where(Image.id.in_(tweet_media_ids)).values(tweet_id=tweet_id)
+        )
         db.session.commit()

@@ -30,6 +30,7 @@ class LikesService:
         :param tweet_id: id твита
         :param user_id: id пользователя
         """
+
         return db.session.execute(
             db.select(Like).where(Like.user_id == user_id, Like.tweet_id == tweet_id)
         ).scalar_one_or_none()

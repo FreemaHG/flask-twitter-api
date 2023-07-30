@@ -1,4 +1,5 @@
 import os
+from typing import Dict
 
 from flask import Flask
 from flask_migrate import Migrate
@@ -8,11 +9,12 @@ from apispec.ext.marshmallow import MarshmallowPlugin
 from flasgger import APISpec, Swagger
 
 from app.database import db
-from app.settings import APP_SETTINGS
+from app.utils.settings import get_settings
 from app.schemas.base_response import ResponseSchema, ErrorResponseSchema
 from app.schemas.users import UserOutSchema
 from app.schemas.images import ImageResponseSchema
 from app.schemas.tweets import TweetResponseSchema, TweetListSchema, TweetInSchema
+from app.urls import add_urls
 
 
 MIGRATION_DIR = os.path.join("app", "migrations")  # Директория для миграций
@@ -20,27 +22,26 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_FOLDER = os.path.join(ROOT_DIR, "templates")
 STATIC_FOLDER = os.path.join(ROOT_DIR, "static")
 
-migrate = Migrate()
+# migrate = Migrate()
 
 
-def create_app() -> Flask:
+def create_app(app_settings) -> Flask:
     """
     Функция создает и возвращает экземпляр приложения Flask
     """
     app = Flask(__name__, template_folder=TEMPLATE_FOLDER, static_folder=STATIC_FOLDER)
 
-    # app.config.from_object('config.DevelopmentConfig')
-    app.config.from_object(
-        APP_SETTINGS
-    )  # Загружаем конфигурацию (подгруженную из .env) из файла настроек
+    # Загружаем конфигурацию приложения (указанную в .env)
+    app.config.from_object(app_settings)
+
+    # Создаем репозиторий для миграций в корне проекта при разработке
+    dev_settings = app.config.get('DEVELOPMENT', None)
+
+    if dev_settings:
+        migrate_start(app=app)
 
     # Инициализация БД
     db.init_app(app)
-
-    # migrate = Migrate(app, db)
-
-    # Инициализация репозитория для миграций в корне проекта
-    migrate.init_app(app, db, directory=MIGRATION_DIR, render_as_batch=True)
 
     # Импортируем все модели перед инициализацией БД
     from .models.users import User
@@ -50,7 +51,23 @@ def create_app() -> Flask:
     with app.test_request_context():
         db.create_all()
 
+    rest_api = create_api(app)  # Экземпляр Flask RESTApi
+    add_urls(rest_api)  # Регистрация URL
+    create_swagger(app=app)  # Подключаем Swagger для автоматической документации
+
     return app
+
+
+def migrate_start(app: Flask) -> None:
+    """
+    Функция для запуска инициализации репозитория для миграций в корне проекта
+    :param app: экземпляр Flask-приложения
+    :return: None
+    """
+    migrate = Migrate(app, db)
+
+    # Инициализация репозитория для миграций в корне проекта
+    migrate.init_app(app, db, directory=MIGRATION_DIR, render_as_batch=True)
 
 
 def create_api(app: Flask) -> Api:

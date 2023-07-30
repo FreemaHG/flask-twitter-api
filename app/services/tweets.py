@@ -49,7 +49,7 @@ class TweetsService:
         db.session.commit()
 
         # Сохраняем изображения, если есть
-        if data["tweet_media_ids"]:
+        if data["tweet_media_ids"] and data["tweet_media_ids"] != []:
             ImageService.update_images(
                 tweet_media_ids=data["tweet_media_ids"], tweet_id=new_tweet.id
             )
@@ -65,12 +65,15 @@ class TweetsService:
         :return: True / False
         """
         logger.debug(f"Удаление твита: id - {tweet_id}")
+        logger.debug(f"Пользователь: id - {user_id}")
+
         tweet = db.session.execute(
             db.select(Tweet).where(Tweet.id == tweet_id)
         ).scalar_one_or_none()
 
         if tweet:
             logger.debug("Твит найден")
+            logger.debug(f"Автор твита: {tweet.user_id}")
 
             if tweet.user_id == user_id:
                 logger.debug("Удаление твита автором")

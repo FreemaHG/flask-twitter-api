@@ -8,3 +8,4 @@ psycopg2==2.9.6
 Flask-Script==2.0.6
 click==8.1/4
 python-dotenv==1.0.0
+flasgger==0.9.7.1

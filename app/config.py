@@ -33,6 +33,7 @@ class ProductionConfig(Config):
 
     DEBUG = False
     SECRET_KEY = os.urandom(32)  # Генерируем случайный ключ
+    # SQLALCHEMY_DATABASE_URI = "sqlite:///project.db"  # PostgreSQL
 
 
 class DevelopmentConfig(Config):
@@ -49,5 +50,5 @@ class TestingConfig(Config):
     Конфигурация для тестирования
     """
 
-    DATABASE_URI = "sqlite:///:memory:"
     TESTING = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"  # Создаем тестовую БД в памяти (не в файле)

@@ -1,6 +1,5 @@
 from flask_restful import Resource
 from sqlalchemy.exc import NoResultFound
-from flasgger import SwaggerView
 from http import HTTPStatus
 from loguru import logger
 

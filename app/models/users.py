@@ -2,6 +2,7 @@ from sqlalchemy import event, func
 
 from app.database import db
 from app.models.tweets import Tweet, Like
+from app.models.base import BaseModelMethodsMixin
 
 
 # Вспомогательная таблица для отслеживания подписок пользователей между собой
@@ -12,7 +13,7 @@ user_to_user = db.Table(
 )
 
 
-class User(db.Model):
+class User(db.Model, BaseModelMethodsMixin):
     """
     Модель для хранения данных о пользователях
     """

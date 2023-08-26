@@ -3,6 +3,7 @@ import datetime
 from sqlalchemy import func
 
 from app.database import db
+from app.models.base import BaseModelMethodsMixin
 
 
 # Вспомогательная таблица для связи твитов и тегов
@@ -13,7 +14,7 @@ tweet_to_tag = db.Table(
 )
 
 
-class Tweet(db.Model):
+class Tweet(db.Model, BaseModelMethodsMixin):
     """
     Модель для хранения твитов
     """
@@ -32,7 +33,7 @@ class Tweet(db.Model):
     )
 
 
-class Image(db.Model):
+class Image(db.Model, BaseModelMethodsMixin):
     """
     Модель для хранения изображений
     """
@@ -52,7 +53,7 @@ class Tag(db.Model):
     name = db.Column(db.String(60), nullable=False)
 
 
-class Like(db.Model):
+class Like(db.Model, BaseModelMethodsMixin):
     """
     Модель для хранения данных о лайках
     """

@@ -36,6 +36,8 @@ def token_required(func):
         )  # Поиск пользователя в БД по api-key
 
         if current_user is None:
+            logger.error("Пользователь не найден")
+
             return (
                 ErrorResponseSchema().dump(
                     {

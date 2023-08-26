@@ -1,7 +1,5 @@
 from http import HTTPStatus
 
-from app.tests.conftest import app, client, db
-
 
 def test_without_api_key(client) -> None:
     """

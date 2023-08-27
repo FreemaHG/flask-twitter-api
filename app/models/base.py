@@ -12,3 +12,16 @@ class BaseModelMethodsMixin:
     def delete(self) -> None:
         db.session.delete(self)
         db.session.commit()
+
+
+class BaseModelUserMixin:
+
+    def get_by_token(self, token):
+        return db.session.execute(db.select('User').where('User.api_key' == token)).scalar_one_or_none()
+
+
+class BaseModelLikeMixin:
+
+    def get_by_ids(self, like_id):
+        return db.session.execute(db.select('Like').where('Like.id' == like_id)).scalar_one_or_none()
+

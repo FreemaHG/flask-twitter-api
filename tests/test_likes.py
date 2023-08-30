@@ -7,7 +7,7 @@ from app.models.users import User
 from app.models.tweets import Tweet, Like
 
 
-# 1 вариант (без твита)
+# 1 вариант (с твитом)
 class TestApi:
 
     @pytest.fixture
@@ -36,7 +36,7 @@ class TestApi:
             assert delete_like_mock.called_once()
 
 
-# 2 вариант (с твитом)
+# 2 вариант (без твита)
 class TestApi2:
 
     @pytest.fixture

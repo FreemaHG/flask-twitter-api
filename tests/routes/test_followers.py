@@ -9,8 +9,7 @@ class TestFollowers:
     def followers(self, users, db):
         users[0].following.append(users[1])
         users[1].following.append(users[2])
-        users[0].save()
-        users[1].save()
+        db.session.add_all([users[0], users[1]])
 
     @pytest.fixture
     def response_not_user(self, response_not_found):

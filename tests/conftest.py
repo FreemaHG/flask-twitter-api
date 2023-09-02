@@ -3,6 +3,7 @@ import pytest
 from app import create_app
 from app.database import db as _db
 from app.config import TestingConfig
+from app.models.users import User
 
 
 @pytest.fixture(scope="session")
@@ -36,3 +37,18 @@ def db(app):
         # Закрываем сессию и удаляем БД
         _db.session.close()
         _db.drop_all()
+
+
+@pytest.fixture(autouse=True)
+def users(db):
+    """
+    Пользователи для тестирования
+    """
+    user_1 = User(name='test-user1', api_key='test-user1')
+    user_2 = User(name='test-user2', api_key='test-user2')
+    user_3 = User(name='test-user3', api_key='test-user3')
+
+    db.session.add_all([user_1, user_2, user_3])
+    db.session.commit()
+
+    return user_1, user_2, user_3

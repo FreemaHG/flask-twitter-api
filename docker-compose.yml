@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres
+
+    # Переменные среды (логи, пароль, таблица БД) для подключения к БД из файла .env
+    # :?err - приведет к сбою запуска при отсутствии переменной среды
+    environment:
+      - POSTGRES_USER=${DB_USER:?err}
+      - POSTGRES_PASSWORD=${DB_PASS:?err}
+      - POSTGRES_DB=${DB_NAME:?err}
+    ports:
+      - '5432:5432'
+    volumes:
+      # Использование точки монтирования (сохранение БД в указанном месте на локальной машине - postgres_db)
+      - ./postgres_db/:/var/lib/postgresql/data

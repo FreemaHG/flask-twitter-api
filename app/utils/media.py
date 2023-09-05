@@ -70,6 +70,8 @@ def save_image(image: FileStorage, avatar=False) -> str:
         )
 
     try:
+        logger.info(f"Сохранение картинки в: {path}")
+
         image.save(path)
 
     except FileNotFoundError:

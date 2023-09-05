@@ -42,7 +42,7 @@ class TestImages:
         @wraps(func)
         def decorator(*args, **kwargs):
             func(*args, **kwargs)
-            delete_path = os.path.join(TEST_ROOT_DIR, 'static')
+            delete_path = os.path.join('static')
 
             print(f'Удаление директории: {delete_path}')
             logger.info(f'Удаление директории: {delete_path}')

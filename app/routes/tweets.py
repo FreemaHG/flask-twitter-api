@@ -157,7 +157,7 @@ class TweetItem(Resource):
 
         except PermissionError as exc:
             return (
-                ErrorResponseSchema().dump({"error_type": "423", "error_message": exc}),
+                ErrorResponseSchema().dump({"error_type": f"{HTTPStatus.LOCKED}", "error_message": exc}),
                 HTTPStatus.LOCKED,
             )  # 423 (заблокировано)
 

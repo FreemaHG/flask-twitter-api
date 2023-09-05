@@ -11,7 +11,6 @@ user_to_user = db.Table(
     db.Column("following_user_id", db.ForeignKey("user.id"), primary_key=True),
 )
 
-
 class User(db.Model):
     """
     Модель для хранения данных о пользователях
@@ -34,12 +33,3 @@ class User(db.Model):
         primaryjoin=id == user_to_user.c.user_id,
         secondaryjoin=id == user_to_user.c.following_user_id,
     )
-
-
-# FIXME Удалить или использовать...
-@event.listens_for(User, "after_delete")
-def event_after_delete(mapper, connection, target):
-    # Здесь будет очень важная бизнес логика
-    # Или нет. На самом деле, старайтесь использовать сигналы только
-    # тогда, когда других, более правильных вариантов не осталось.
-    pass

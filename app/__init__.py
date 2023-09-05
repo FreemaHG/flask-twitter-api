@@ -15,6 +15,7 @@ from app.schemas.users import UserOutSchema
 from app.schemas.images import ImageResponseSchema
 from app.schemas.tweets import TweetResponseSchema, TweetListSchema, TweetInSchema
 from app.urls import add_urls
+from app.utils.settings import get_settings
 
 
 MIGRATION_DIR = os.path.join("app", "migrations")  # Директория для миграций
@@ -25,10 +26,14 @@ STATIC_FOLDER = os.path.join(ROOT_DIR, "static")
 # migrate = Migrate()
 
 
-def create_app(app_settings) -> Flask:
+def create_app(app_settings=None) -> Flask:
     """
     Функция создает и возвращает экземпляр приложения Flask
     """
+
+    if not app_settings:
+        app_settings = get_settings()
+
     app = Flask(__name__, template_folder=TEMPLATE_FOLDER, static_folder=STATIC_FOLDER)
 
     # Загружаем конфигурацию приложения (указанную в .env)
@@ -44,8 +49,8 @@ def create_app(app_settings) -> Flask:
     db.init_app(app)
 
     # Импортируем все модели перед инициализацией БД
-    from .models.users import User
-    from .models.tweets import Tweet, Tag, Image, Like, Comment
+    from app.models.users import User
+    from app.models.tweets import Tweet, Image, Like
 
     # Создание БД
     with app.test_request_context():

@@ -1,5 +1,7 @@
 import os
 
+from app.utils.settings import DB_USER, DB_PASS, DB_PORT, DB_NAME, DB_HOST
+
 
 _IMAGES_FOLDER = os.path.join(
     "static", "img"
@@ -29,7 +31,7 @@ class ProductionConfig(Config):
     """
     DEBUG = False
     SECRET_KEY = os.urandom(32)  # Генерируем случайный ключ
-    # SQLALCHEMY_DATABASE_URI = "sqlite:///project.db"  # PostgreSQL
+    SQLALCHEMY_DATABASE_URI = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 class DevelopmentConfig(Config):
     """
@@ -37,6 +39,7 @@ class DevelopmentConfig(Config):
     """
     DEVELOPMENT = True
     DEBUG = True
+    SQLALCHEMY_DATABASE_URI = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 class TestingConfig(Config):
     """

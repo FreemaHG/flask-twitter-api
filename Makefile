@@ -3,7 +3,7 @@
 
 venv: venv/touchfile
 
-venv/touchfile: requirements.txt
+venv/touchfile: app/requirements/development.txt
 	test -d venv || python3 -m venv venv
 	touch venv/touchfile
 

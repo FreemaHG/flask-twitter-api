@@ -7,7 +7,7 @@
 * Docker and Docker Compose (containerization);
 * PostgreSQL (database);
 * SQLAlchemy (working with database from Python);
-* Alembic (database migrations made easy);
+* Flask-Migrate (database migrations made easy);
 * Loguru (logging);
 * Pytest (tests);
 

@@ -43,7 +43,7 @@ def create_app(app_settings=None) -> Flask:
     dev_settings = app.config.get('DEVELOPMENT', None)
 
     if dev_settings:
-        migrate_start(app=app)
+        app = migrate_start(app=app)
 
     # Инициализация БД
     db.init_app(app)
@@ -63,16 +63,18 @@ def create_app(app_settings=None) -> Flask:
     return app
 
 
-def migrate_start(app: Flask) -> None:
+def migrate_start(app: Flask) -> Flask:
     """
     Функция для запуска инициализации репозитория для миграций в корне проекта
     :param app: экземпляр Flask-приложения
     :return: None
     """
-    migrate = Migrate(app, db)
+    migrate = Migrate()
 
     # Инициализация репозитория для миграций в корне проекта
     migrate.init_app(app, db, directory=MIGRATION_DIR, render_as_batch=True)
+
+    return app
 
 
 def create_api(app: Flask) -> Api:

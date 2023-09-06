@@ -2,17 +2,30 @@ version: '3.8'
 
 services:
 
-  postgres:
-    image: postgres
-
-    # Переменные среды (логи, пароль, таблица БД) для подключения к БД из файла .env
-    # :?err - приведет к сбою запуска при отсутствии переменной среды
-    environment:
-      - POSTGRES_USER=${DB_USER:?err}
-      - POSTGRES_PASSWORD=${DB_PASS:?err}
-      - POSTGRES_DB=${DB_NAME:?err}
+  app:
+    build:
+      context: .
+    env_file:
+      - .env
+    container_name: app
+    command: [ "/app/docker/app.sh", "-p 5050"]
+    expose:
+      - 5050
     ports:
-      - '5432:5432'
+      - 5050:5050
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    # На случай, если в Docker уже есть запущенные контейнеры с PostgresSQL на порту 5432
+    command: -p 5432
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
     volumes:
-      # Использование точки монтирования (сохранение БД в указанном месте на локальной машине - postgres_db)
       - ./postgres_db/:/var/lib/postgresql/data

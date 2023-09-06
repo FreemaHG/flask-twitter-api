@@ -130,3 +130,6 @@ dmypy.json
 .idea/*
 .env
 /.editorconfig
+postgres_db
+nginx
+instance

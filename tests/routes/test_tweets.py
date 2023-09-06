@@ -10,7 +10,7 @@ class TestTweets:
         """
         Заголовок при добавлении нового твита
         """
-        headers['Content-Type'] = 'application/json'
+        headers["Content-Type"] = "application/json"
         return headers
 
     @pytest.fixture
@@ -18,7 +18,7 @@ class TestTweets:
         """
         Успешный ответ при добавлении нового твита
         """
-        good_response['tweet_id'] = 3
+        good_response["tweet_id"] = 3
         return good_response
 
     @pytest.fixture
@@ -26,19 +26,19 @@ class TestTweets:
         """
         Данные для добавления нового твита
         """
-        return {'tweet_data': 'Тестовый твит', 'tweet_media_ids': []}
+        return {"tweet_data": "Тестовый твит", "tweet_media_ids": []}
 
     @pytest.fixture
     def new_tweet_with_image(self, new_tweet):
         """
         Данные для добавления нового твита с изображениями
         """
-        new_tweet['tweet_media_ids'] = [1, 2]
+        new_tweet["tweet_media_ids"] = [1, 2]
         return new_tweet
 
     @pytest.fixture
     def response_tweet_locked(self, response_locked):
-        response_locked['error_message'] = 'The tweet that is being accessed is locked'
+        response_locked["error_message"] = "The tweet that is being accessed is locked"
         return response_locked
 
     def send_request(self, client, headers, new_tweet_data=new_tweet):
@@ -46,7 +46,7 @@ class TestTweets:
         Отправка запроса на добавление нового твита
         """
         resp = client.post(
-            '/api/tweets',
+            "/api/tweets",
             data=json.dumps(new_tweet_data),
             headers=headers
         )
@@ -82,18 +82,18 @@ class TestTweets:
         """
         Тестирование вывода сообщения об ошибке при публикации слишком длинного твита (> 280 символов)
         """
-        new_tweet['tweet_data'] = 'Python — идеальный язык для новичка. '\
-                                  'Код на Python легко писать и читать, язык стабильно занимает высокие места '\
-                                  'в рейтингах популярности, а «питонисты» востребованы почти во всех сферах '\
-                                  'IT — программировании, анализе данных, системном администрировании и тестировании. '\
-                                  'YouTube, Intel, Pixar, NASA, VK, Яндекс — вот лишь немногие из известных компаний, '\
-                                  'которые используют Python в своих продуктах.'
+        new_tweet["tweet_data"] = "Python — идеальный язык для новичка. "\
+                                  "Код на Python легко писать и читать, язык стабильно занимает высокие места "\
+                                  "в рейтингах популярности, а «питонисты» востребованы почти во всех сферах "\
+                                  "IT — программировании, анализе данных, системном администрировании и тестировании. "\
+                                  "YouTube, Intel, Pixar, NASA, VK, Яндекс — вот лишь немногие из известных компаний, "\
+                                  "которые используют Python в своих продуктах."
 
         resp = self.send_request(client=client, headers=headers_with_content_type, new_tweet_data=new_tweet)
 
-        bad_response['error_type'] = f'{HTTPStatus.BAD_REQUEST}'
-        bad_response['error_message'] = 'The length of the tweet should not exceed 280 characters. '\
-                                        f'Current value: {len(new_tweet["tweet_data"])}'
+        bad_response["error_type"] = f"{HTTPStatus.BAD_REQUEST}"
+        bad_response["error_message"] = "The length of the tweet should not exceed 280 characters. "\
+                                        f"Current value: {len(new_tweet['tweet_data'])}"
 
         assert resp
         assert resp.status_code == HTTPStatus.BAD_REQUEST
@@ -104,7 +104,7 @@ class TestTweets:
         """
         Тестирование удаление твита
         """
-        resp = client.delete('/api/tweets/1', headers=headers)
+        resp = client.delete("/api/tweets/1", headers=headers)
 
         assert resp
         assert resp.status_code == HTTPStatus.OK
@@ -115,7 +115,7 @@ class TestTweets:
         """
         Тестирование вывода ошибки при попытке удалить несуществующий твит
         """
-        resp = client.delete('/api/tweets/1000', headers=headers)
+        resp = client.delete("/api/tweets/1000", headers=headers)
 
         assert resp
         assert resp.status_code == HTTPStatus.NOT_FOUND
@@ -126,7 +126,7 @@ class TestTweets:
         """
         Тестирование вывода ошибки при попытке удалить чужой твит
         """
-        resp = client.delete('/api/tweets/2', headers=headers)
+        resp = client.delete("/api/tweets/2", headers=headers)
 
         assert resp
         assert resp.status_code == HTTPStatus.LOCKED

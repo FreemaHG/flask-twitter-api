@@ -7,7 +7,7 @@ class TestToken:
         """
         Тестирование вывода ошибки при запросе без api-key в header
         """
-        resp = client.get('/api/tweets')
+        resp = client.get("/api/tweets")
 
         # Ожидаемый ответ
         await_response = {
@@ -27,7 +27,7 @@ class TestToken:
         """
         Тестирование вывода ошибки при запросе с api-key в header, но без совпадений в БД
         """
-        resp = client.get('/api/tweets', headers={'api-key': 'test-user1000'})
+        resp = client.get("/api/tweets", headers={"api-key": "test-user1000"})
 
         await_response = {
             "result": False,

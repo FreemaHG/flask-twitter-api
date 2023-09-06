@@ -44,9 +44,9 @@ def users(db):
     """
     Пользователи для тестирования
     """
-    user_1 = User(name='test-user1', api_key='test-user1')
-    user_2 = User(name='test-user2', api_key='test-user2')
-    user_3 = User(name='test-user3', api_key='test-user3')
+    user_1 = User(name="test-user1", api_key="test-user1")
+    user_2 = User(name="test-user2", api_key="test-user2")
+    user_3 = User(name="test-user3", api_key="test-user3")
 
     db.session.add_all([user_1, user_2, user_3])
     db.session.commit()

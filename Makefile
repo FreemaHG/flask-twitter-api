@@ -64,8 +64,8 @@ format-ruff: venv
 ############### lint
 
 .PHONY: lint
-lint: venv
-	. venv/bin/activate; make lint-ruff; make lint-black
+#lint: venv
+#	. venv/bin/activate; make lint-ruff; make lint-black
 
 .PHONY: lint-black
 lint-black: venv

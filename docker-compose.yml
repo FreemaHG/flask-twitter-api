@@ -8,11 +8,9 @@ services:
     env_file:
       - .env
     container_name: app
-    command: [ "/app/docker/app.sh", "-p 5050"]
-    expose:
-      - 5050
+    command: ["docker/app.sh"]
     ports:
-      - 5050:5050
+      - 6789:5000
     depends_on:
       - postgres
 
@@ -25,6 +23,10 @@ services:
       - 5432
     ports:
       - 5432:5432
+#    environment:
+#      - POSTGRES_USER=${DB_USER:?err}
+#      - POSTGRES_PASSWORD=${DB_PASS:?err}
+#      - POSTGRES_DB=${DB_NAME:?err}
     env_file:
       - .env
     volumes:

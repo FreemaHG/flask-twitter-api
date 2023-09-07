@@ -94,3 +94,4 @@ postgres_db/
 app/requirements/production.txt
 nginx
 tests
+instance

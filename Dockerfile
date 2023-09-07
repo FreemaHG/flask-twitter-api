@@ -4,13 +4,13 @@ FROM python:3.11
 RUN mkdir /app
 
 # Устанавливаем директорию app в качесте рабочей (переходим в нее)
-WORKDIR /app
+#WORKDIR /app
 
-COPY app/requirements requirements
-RUN pip install -r requirements/development.txt
+COPY app/requirements app/requirements
+RUN pip install -r app/requirements/development.txt
 
 # После копируем все остальные файлы (чаще изменяемые) внутрь рабочей директории
-COPY app/ .
+COPY . .
 COPY docker/ docker
 COPY .env .
 

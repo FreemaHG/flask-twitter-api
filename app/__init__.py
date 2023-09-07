@@ -2,7 +2,7 @@ import os
 from typing import Dict
 
 from flask import Flask
-# from flask_migrate import Migrate
+from flask_migrate import Migrate
 from flask_restful import Api, reqparse
 from apispec_webframeworks.flask import FlaskPlugin
 from apispec.ext.marshmallow import MarshmallowPlugin
@@ -19,6 +19,7 @@ from app.utils.settings import get_settings
 
 
 # MIGRATION_DIR = os.path.join("app", "../migrations")  # Директория для миграций
+MIGRATION_DIR = os.path.join("migrations")  # Директория для миграций
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATE_FOLDER = os.path.join(ROOT_DIR, "templates")
 STATIC_FOLDER = os.path.join(ROOT_DIR, "static")
@@ -40,10 +41,10 @@ def create_app(app_settings=None) -> Flask:
     app.config.from_object(app_settings)
 
     # Создаем репозиторий для миграций в корне проекта при разработке
-    # dev_settings = app.config.get('DEVELOPMENT', None)
+    dev_settings = app.config.get('DEVELOPMENT', None)
 
-    # if dev_settings:
-    #     app = migrate_start(app=app)
+    if dev_settings:
+        app = migrate_start(app=app)
 
     # Инициализация БД
     db.init_app(app)
@@ -62,19 +63,19 @@ def create_app(app_settings=None) -> Flask:
 
     return app
 
-#
-# def migrate_start(app: Flask) -> Flask:
-#     """
-#     Функция для запуска инициализации репозитория для миграций в корне проекта
-#     :param app: экземпляр Flask-приложения
-#     :return: None
-#     """
-#     migrate = Migrate()
-#
-#     # Инициализация репозитория для миграций в корне проекта
-#     migrate.init_app(app, db, directory=MIGRATION_DIR, render_as_batch=True)
-#
-#     return app
+
+def migrate_start(app: Flask) -> Flask:
+    """
+    Функция для запуска инициализации репозитория для миграций в корне проекта
+    :param app: экземпляр Flask-приложения
+    :return: None
+    """
+    migrate = Migrate()
+
+    # Инициализация репозитория для миграций в корне проекта
+    migrate.init_app(app, db, directory=MIGRATION_DIR, render_as_batch=True)
+
+    return app
 
 
 def create_api(app: Flask) -> Api:

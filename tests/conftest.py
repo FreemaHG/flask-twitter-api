@@ -3,7 +3,10 @@ import pytest
 from app import create_app
 from app.database import db as _db
 from app.config import TestingConfig
+
+# Импортируем все модели, чтобы все таблицы создавались в фикстуре db
 from app.models.users import User
+from app.models.tweets import Tweet, Image, Like
 
 
 @pytest.fixture(scope="session")

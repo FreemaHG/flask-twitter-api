@@ -25,14 +25,6 @@ class Config(object):
         "gif",
     }
 
-class ProductionConfig(Config):
-    """
-    Конфигурация для рабочей среды
-    """
-    DEBUG = False
-    SECRET_KEY = os.urandom(32)  # Генерируем случайный ключ
-    SQLALCHEMY_DATABASE_URI = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-
 class DevelopmentConfig(Config):
     """
     Конфигурация для разработки
@@ -47,3 +39,10 @@ class TestingConfig(Config):
     """
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"  # Создаем тестовую БД в памяти (не в файле)
+
+class ProductionConfig(DevelopmentConfig):
+    """
+    Конфигурация для рабочей среды
+    """
+    DEBUG = False
+    SECRET_KEY = os.urandom(32)  # Генерируем ключ

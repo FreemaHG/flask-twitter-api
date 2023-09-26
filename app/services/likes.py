@@ -45,7 +45,6 @@ class LikesService:
         """
 
         if not cls.check_like_tweet(tweet_id=tweet.id, user_id=user_id):
-            tweet.num_likes += 1  # Увеличиваем счетчик с лайками
             like_record = Like(
                 user_id=user_id, tweet_id=tweet.id
             )  # Создаем запись о лайке
@@ -76,12 +75,6 @@ class LikesService:
 
             else:
                 db.session.delete(like_record)  # Удаляем лайк
-                tweet.num_likes -= 1  # Уменьшаем счетчик лайков твита
-
-                # Проверка, чтобы лайки не уходили в минус
-                if tweet.num_likes < 0:
-                    tweet.num_likes = 0
-
                 db.session.commit()
 
         else:

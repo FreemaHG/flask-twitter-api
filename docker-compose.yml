@@ -1,32 +1,46 @@
-version: '3.8'
+version: '3.11'
 
 services:
+  web:
+    container_name: nginx
+    build: nginx
+    volumes:
+      - ./nginx/static/images:/usr/share/nginx/html/static/images
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - api
+    logging:
+      driver: "local"
 
-  app:
+  api:
     build:
       context: .
     env_file:
       - .env
-    container_name: app
-    command: ["docker/app.sh"]
+    container_name: api
+#    command: ["docker/app.sh"]
     ports:
-      - 6789:5000
+      - 5000:5000
     depends_on:
       - postgres
+    logging:
+      driver: "local"
 
   postgres:
     image: postgres:15
-    container_name: postgres
+    container_name: db
     # На случай, если в Docker уже есть запущенные контейнеры с PostgresSQL на порту 5432
     command: -p 5432
     expose:
       - 5432
     ports:
       - 5432:5432
-#    environment:
-#      - POSTGRES_USER=${DB_USER:?err}
-#      - POSTGRES_PASSWORD=${DB_PASS:?err}
-#      - POSTGRES_DB=${DB_NAME:?err}
+    environment:
+      - POSTGRES_USER=${DB_USER:?err}
+      - POSTGRES_PASSWORD=${DB_PASS:?err}
+      - POSTGRES_DB=${DB_NAME:?err}
     env_file:
       - .env
     volumes:

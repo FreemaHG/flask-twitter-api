@@ -40,14 +40,12 @@ def create_app(app_settings=None) -> Flask:
     # Загружаем конфигурацию приложения (указанную в .env)
     app.config.from_object(app_settings)
 
-    # Создаем репозиторий для миграций в корне проекта при разработке
-    dev_settings = app.config.get('DEVELOPMENT', None)
-
-    if dev_settings:
-        app = migrate_start(app=app)
-
     # Инициализация БД
     db.init_app(app)
+
+    # Инициализация репозитория для миграций в корне проекта
+    migrate = Migrate()
+    migrate.init_app(app, db, directory=MIGRATION_DIR, render_as_batch=True)
 
     # Импортируем все модели перед инициализацией БД
     from app.models.users import User
@@ -60,20 +58,6 @@ def create_app(app_settings=None) -> Flask:
     rest_api = create_api(app)  # Экземпляр Flask RESTApi
     add_urls(rest_api)  # Регистрация URL
     create_swagger(app=app)  # Подключаем Swagger для автоматической документации
-
-    return app
-
-
-def migrate_start(app: Flask) -> Flask:
-    """
-    Функция для запуска инициализации репозитория для миграций в корне проекта
-    :param app: экземпляр Flask-приложения
-    :return: None
-    """
-    migrate = Migrate()
-
-    # Инициализация репозитория для миграций в корне проекта
-    migrate.init_app(app, db, directory=MIGRATION_DIR, render_as_batch=True)
 
     return app
 

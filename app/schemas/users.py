@@ -10,10 +10,16 @@ class UserSchema(Schema):
     Базовая схема пользователя
     """
 
-    id = fields.Int(dump_only=True)  # dump_only=True - id присваивается после добавления записи в БД
+    id = fields.Int(
+        dump_only=True
+    )  # dump_only=True - id присваивается после добавления записи в БД
     name = fields.Str(required=True)  # Обязательное поле
-    followers = fields.List(fields.Nested("UserSchema", only=("id", "name")))  # Подписчики
-    following = fields.List(fields.Nested("UserSchema", only=("id", "name")))  # Подписки
+    followers = fields.List(
+        fields.Nested("UserSchema", only=("id", "name"))
+    )  # Подписчики
+    following = fields.List(
+        fields.Nested("UserSchema", only=("id", "name"))
+    )  # Подписки
 
     @validates("name")
     def validate_name(self, name: str) -> None:

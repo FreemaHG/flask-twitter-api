@@ -4,6 +4,7 @@ from sqlalchemy import func
 
 from app.database import db
 
+
 class Tweet(db.Model):
     """
     Модель для хранения твитов
@@ -16,6 +17,7 @@ class Tweet(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     images = db.relationship("Image", backref="tweet", cascade="all, delete-orphan")
 
+
 class Image(db.Model):
     """
     Модель для хранения изображений
@@ -24,6 +26,7 @@ class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     tweet_id = db.Column(db.Integer, db.ForeignKey("tweet.id"), nullable=True)
     path = db.Column(db.String, nullable=True)
+
 
 class Like(db.Model):
     """

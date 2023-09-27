@@ -2,7 +2,6 @@ from http import HTTPStatus
 
 
 class TestToken:
-
     def test_without_api_key(self, client) -> None:
         """
         Тестирование вывода ошибки при запросе без api-key в header
@@ -13,7 +12,7 @@ class TestToken:
         await_response = {
             "result": False,
             "error_type": f"{HTTPStatus.UNAUTHORIZED}",
-            "error_message": "Valid api-token token is missing"
+            "error_message": "Valid api-token token is missing",
         }
 
         # Проверка кода ответа - 401
@@ -21,7 +20,6 @@ class TestToken:
 
         # Проверка ответа
         assert resp.json == await_response
-
 
     def test_unidentified_user(self, client) -> None:
         """
@@ -32,7 +30,7 @@ class TestToken:
         await_response = {
             "result": False,
             "error_type": f"{HTTPStatus.UNAUTHORIZED}",
-            "error_message": "Sorry. Wrong api-key token. This user does not exist"
+            "error_message": "Sorry. Wrong api-key token. This user does not exist",
         }
 
         assert resp.status_code == HTTPStatus.UNAUTHORIZED

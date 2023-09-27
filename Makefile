@@ -3,7 +3,7 @@
 
 venv: venv/touchfile
 
-venv/touchfile: app/requirements/development.txt
+venv/touchfile: requirements
 	test -d venv || python3 -m venv venv
 	touch venv/touchfile
 
@@ -64,8 +64,8 @@ format-ruff: venv
 ############### lint
 
 .PHONY: lint
-#lint: venv
-#	. venv/bin/activate; make lint-ruff; make lint-black
+lint: venv
+	. venv/bin/activate; make lint-ruff; make lint-black
 
 .PHONY: lint-black
 lint-black: venv

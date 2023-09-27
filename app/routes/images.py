@@ -12,7 +12,6 @@ from app.schemas.images import ImageInSchema, ImageResponseSchema
 
 
 class AddImages(Resource):
-
     @token_required
     def post(self, current_user: User):
         """
@@ -20,12 +19,11 @@ class AddImages(Resource):
         ---
         tags:
           - images
+        # Защищаем метод (ендпоинт) авторизацией через токен в header (см. __init__.py, create_swagger - APIKeyHeader)
+        security:
+         - APIKeyHeader: []
         description: Ендпоинт вызывается автоматически для каждого погружаемого изображения при публикации твита с последующей привязкой к твиту
         parameters:
-          - name: api-key
-            in: header
-            required: true
-            type: string
           - name: file
             in: formData
             description: Изображение для загрузки

@@ -10,3 +10,4 @@ click==8.1.4
 python-dotenv==1.0.0
 flasgger==0.9.7.1
 apispec-webframeworks==0.5.2
+loguru==0.7.0

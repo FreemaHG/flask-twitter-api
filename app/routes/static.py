@@ -6,6 +6,6 @@ from app.main import app
 @app.route("/<path:path>")
 def send_static(path):
     """
-    Вывод статических файлов
+    Вывод статических файлов (используется при разработке)
     """
     return send_from_directory(STATIC_FOLDER, path)

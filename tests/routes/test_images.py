@@ -1,6 +1,7 @@
 import os
 import shutil
 
+from datetime import datetime
 from functools import wraps
 from http import HTTPStatus
 from pathlib import Path
@@ -9,11 +10,13 @@ import pytest
 from flask import current_app
 from loguru import logger
 
+from app.config import IMAGES_FOLDER
+
 
 TEST_ROOT_DIR = Path(__file__).resolve().parents[1]  # Корневая директория с тестами
 
-class TestImages:
 
+class TestImages:
     @pytest.fixture
     def image(self):
         image_name = os.path.join(TEST_ROOT_DIR, "files_for_tests", "test_image.jpg")
@@ -30,7 +33,7 @@ class TestImages:
         resp = client.post(
             "/api/medias",
             data={"file": file},
-            headers={"api-key": "test-user1", "Content-Type": "multipart/form-data"}
+            headers={"api-key": "test-user1", "Content-Type": "multipart/form-data"},
         )
 
         return resp
@@ -39,21 +42,30 @@ class TestImages:
         """
         Декоратор для удаления созданных папок и файлов при тестировании загрузки изображений
         """
+
         @wraps(func)
         def decorator(*args, **kwargs):
             func(*args, **kwargs)
-            delete_path = os.path.join("static")
 
-            print(f"Удаление директории: {delete_path}")
+            current_date = datetime.now()
+            delete_path = os.path.join(
+                IMAGES_FOLDER,
+                "tweets",
+                f"{current_date.year}",
+                f"{current_date.month}",
+                f"{current_date.day}",
+                "test_image.jpg",
+            )
+
             logger.info(f"Удаление директории: {delete_path}")
 
             try:
-                shutil.rmtree(delete_path)
+                os.remove(delete_path)
+
             except FileNotFoundError:
                 logger.warning(f"Директория {delete_path} не найдена!")
 
         return decorator
-
 
     @clear_path
     def test_load_image(self, client, users, image, good_response) -> None:
@@ -67,8 +79,9 @@ class TestImages:
         assert resp.status_code == HTTPStatus.CREATED
         assert resp.json == good_response
 
-
-    def test_load_incorrect_file(self, client, users, incorrect_file, bad_response) -> None:
+    def test_load_incorrect_file(
+        self, client, users, incorrect_file, bad_response
+    ) -> None:
         """
         Тестирование вывода сообщения об ошибке при попытке загрузить файл неразрешенного формата
         """
@@ -79,7 +92,9 @@ class TestImages:
         )
 
         bad_response["error_type"] = f"{HTTPStatus.UNPROCESSABLE_ENTITY}"
-        bad_response["error_message"] = f"Invalid images format. Only {allowed_format} files accepted"
+        bad_response[
+            "error_message"
+        ] = f"Invalid images format. Only {allowed_format} files accepted"
 
         assert resp
         assert resp.status_code == HTTPStatus.UNPROCESSABLE_ENTITY

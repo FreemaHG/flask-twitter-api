@@ -13,7 +13,6 @@ from app.schemas.base_response import ErrorResponseSchema, ResponseSchema
 
 
 class TweetsList(Resource):
-
     @token_required
     def get(self, current_user: User):
         """
@@ -21,12 +20,10 @@ class TweetsList(Resource):
         ---
         tags:
           - tweets
-        description: Выводятся последние твиты подписчиков
-        parameters:
-          - name: api-key
-            in: header
-            required: true
-            type: string
+        # Защищаем метод (ендпоинт) авторизацией через токен в header (см. __init__.py, create_swagger - APIKeyHeader)
+        security:
+         - APIKeyHeader: []
+        description: Вывести последние твиты подписчиков
         responses:
           200:
             schema:
@@ -52,12 +49,11 @@ class TweetsList(Resource):
         ---
         tags:
           - tweets
-        description: Публикация твита (изображения не обязательны). При передаче изображений в форму автоматически вызывается ендпоинт для их сохранения
+        security:
+         - APIKeyHeader: []
+        description: Публикация твита (изображения не обязательны).
+            При передаче изображений в форму автоматически вызывается ендпоинт для их сохранения
         parameters:
-          - name: api-key
-            in: header
-            required: true
-            type: string
           - name: body
             in: body
             required: true
@@ -111,7 +107,6 @@ class TweetsList(Resource):
 
 
 class TweetItem(Resource):
-
     @token_required
     def delete(self, current_user: User, tweet_id: int):
         """
@@ -119,12 +114,10 @@ class TweetItem(Resource):
         ---
         tags:
           - tweets
+        security:
+         - APIKeyHeader: []
         description: Пользователь может удалять только свои твиты
         parameters:
-          - name: api-key
-            in: header
-            required: true
-            type: string
           - name: tweet_id
             in: path
             required: true
@@ -157,7 +150,9 @@ class TweetItem(Resource):
 
         except PermissionError as exc:
             return (
-                ErrorResponseSchema().dump({"error_type": f"{HTTPStatus.LOCKED}", "error_message": exc}),
+                ErrorResponseSchema().dump(
+                    {"error_type": f"{HTTPStatus.LOCKED}", "error_message": exc}
+                ),
                 HTTPStatus.LOCKED,
             )  # 423 (заблокировано)
 

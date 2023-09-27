@@ -11,7 +11,6 @@ from app.models.users import User
 
 
 class UserData(Resource):
-
     @token_required
     def get(self, current_user: User, user_id=None):
         """
@@ -19,11 +18,10 @@ class UserData(Resource):
         ---
         tags:
          - users
+        # Защищаем метод (ендпоинт) авторизацией через токен в header (см. __init__.py, create_swagger - APIKeyHeader)
+        security:
+         - APIKeyHeader: []
         parameters:
-          - name: api-key
-            in: header
-            required: true
-            type: string
           - name: user_id
             in: path
             required: false
@@ -81,11 +79,9 @@ class Followers(Resource):
         ---
         tags:
           - followers
+        security:
+         - APIKeyHeader: []
         parameters:
-          - name: api-key
-            in: header
-            required: true
-            type: string
           - name: user_id
             in: path
             required: true
@@ -137,11 +133,9 @@ class Followers(Resource):
         ---
         tags:
           - followers
+        security:
+         - APIKeyHeader: []
         parameters:
-          - name: api-key
-            in: header
-            required: true
-            type: string
           - name: user_id
             in: path
             required: true

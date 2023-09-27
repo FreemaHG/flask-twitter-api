@@ -9,6 +9,7 @@ from loguru import logger
 
 from app.database import db
 from app.models.tweets import Image
+from app.config import STATIC_FOLDER
 
 
 def allowed_image(image_name: str) -> bool:
@@ -104,13 +105,13 @@ def delete_images(tweet_id: int) -> None:
         images = list(chain(*images))  # Очищаем результат от вложенных кортежей
         # Директория с изображениями к твиту
         folder = os.path.join(
-            "static", images[0].path.rsplit("/", 1)[0].rsplit("\\", 1)[0]
+            STATIC_FOLDER, images[0].path.rsplit("/", 1)[0].rsplit("\\", 1)[0]
         )
 
         for img in images:
             try:
                 os.remove(
-                    os.path.join("static", img.path)
+                    os.path.join(STATIC_FOLDER, img.path)
                 )  # Удаляем каждое изображение из файловой системы
 
             except FileNotFoundError:

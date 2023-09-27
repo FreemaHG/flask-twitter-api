@@ -14,6 +14,7 @@ user_to_user = db.Table(
     db.Column("following_user_id", db.ForeignKey("user.id"), primary_key=True),
 )
 
+
 class User(db.Model):
     """
     Модель для хранения данных о пользователях

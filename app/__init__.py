@@ -1,5 +1,4 @@
 import os
-from typing import Dict
 
 from flask import Flask
 from flask_migrate import Migrate
@@ -9,33 +8,24 @@ from apispec.ext.marshmallow import MarshmallowPlugin
 from flasgger import APISpec, Swagger
 
 from app.database import db
-from app.utils.settings import get_settings
+from app.utils.settings import APP_SETTINGS
 from app.schemas.base_response import ResponseSchema, ErrorResponseSchema
 from app.schemas.users import UserOutSchema
 from app.schemas.images import ImageResponseSchema
 from app.schemas.tweets import TweetResponseSchema, TweetListSchema, TweetInSchema
 from app.urls import add_urls
-from app.utils.settings import get_settings
+from app.config import STATIC_FOLDER
 
 
-# MIGRATION_DIR = os.path.join("app", "../migrations")  # Директория для миграций
 MIGRATION_DIR = os.path.join("migrations")  # Директория для миграций
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-TEMPLATE_FOLDER = os.path.join(ROOT_DIR, "templates")
-STATIC_FOLDER = os.path.join(ROOT_DIR, "static")
-
-# migrate = Migrate()
 
 
-def create_app(app_settings=None) -> Flask:
+def create_app(app_settings=APP_SETTINGS) -> Flask:
     """
     Функция создает и возвращает экземпляр приложения Flask
     """
 
-    if not app_settings:
-        app_settings = get_settings()
-
-    app = Flask(__name__, template_folder=TEMPLATE_FOLDER, static_folder=STATIC_FOLDER)
+    app = Flask(__name__, static_folder=STATIC_FOLDER)
 
     # Загружаем конфигурацию приложения (указанную в .env)
     app.config.from_object(app_settings)
@@ -84,9 +74,9 @@ def create_swagger(app: Flask) -> Swagger:
 
     # Инициализируем объект спецификации для приложения
     spec = APISpec(
-        title='Twitter',  # Название спецификации
-        version='1.0.0',  # Версия нашей спецификации
-        openapi_version='2.0',  # Версия OpenAPI, которую мы будем использовать
+        title="Twitter",  # Название спецификации
+        version="1.0.0",  # Версия нашей спецификации
+        openapi_version="2.0",  # Версия OpenAPI, которую мы будем использовать
         plugins=[  # Подключаемые плагины (расширяют функционал системы)
             FlaskPlugin(),  # Для быстрого добавления всех ендпоинтов в документацию
             MarshmallowPlugin(),
@@ -103,9 +93,13 @@ def create_swagger(app: Flask) -> Swagger:
             ImageResponseSchema,
             TweetResponseSchema,
             TweetListSchema,
-            TweetInSchema
+            TweetInSchema,
         ],
     )
+    # Используем авторизацию по токену в header (кнопка авторизации в правом верхнем углу)
+    template["securityDefinitions"] = {
+        "APIKeyHeader": {"type": "apiKey", "name": "api-key", "in": "header"}
+    }
 
     swagger = Swagger(app, template=template)
 

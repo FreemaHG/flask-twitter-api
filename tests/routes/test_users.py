@@ -4,7 +4,6 @@ from http import HTTPStatus
 
 
 class TestUsers:
-
     @pytest.fixture
     def response_data(self, good_response):
         """
@@ -28,7 +27,6 @@ class TestUsers:
         bad_response["error_message"] = "Sorry. This user does not exist"
         return bad_response
 
-
     def test_user_me_data(self, client, response_data, users, headers) -> None:
         """
         Тестирование ендпоинта по выводу данных о текущем пользователе
@@ -38,7 +36,6 @@ class TestUsers:
         assert resp
         assert resp.status_code == HTTPStatus.OK
         assert resp.json == response_data
-
 
     def test_user_data_for_id(self, client, response_data, users, headers) -> None:
         """
@@ -50,8 +47,9 @@ class TestUsers:
         assert resp.status_code == HTTPStatus.OK
         assert resp.json == response_data
 
-
-    def test_user_data_for_id_not_found(self, client, response_error, users, headers) -> None:
+    def test_user_data_for_id_not_found(
+        self, client, response_error, users, headers
+    ) -> None:
         """
         Тестирование вывода ошибки при отсутствии пользователя по переданному id
         """

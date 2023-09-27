@@ -1,19 +1,13 @@
 FROM python:3.11
 
-# Создаем директорию fastapi_app внутри контейнера
-RUN mkdir /app
+COPY requirements/base.txt /app/requirements/base.txt
+COPY requirements/production.txt /app/requirements/production.txt
 
-# Устанавливаем директорию app в качесте рабочей (переходим в нее)
-#WORKDIR /app
+RUN pip install --no-cache-dir --upgrade -r /app/requirements/production.txt
 
-COPY app/requirements app/requirements
-RUN pip install -r app/requirements/development.txt
+COPY ./app /app
 
-# После копируем все остальные файлы (чаще изменяемые) внутрь рабочей директории
-COPY . .
-COPY docker/ docker
-COPY .env .
-
-# Данной командой мы разрешаем Docker выполнять все команды в папке docker с расширением .sh (bash-команды),
-# которые в нашем случае используются для запуска Celery и Flower (в docker-compose.yml)
-RUN chmod a+x docker/*.sh
+# gunicorn
+# Обязательно указываем порт, иначе приложение из контейнера не будет отправлять ответ за пределы контейнера
+#CMD gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:5000
+CMD gunicorn -k uvicorn.workers.UvicornWorker --workers 4 app.main:app --bind=0.0.0.0:5000

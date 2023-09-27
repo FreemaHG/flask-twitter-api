@@ -18,11 +18,10 @@ class LikesRoute(Resource):
         ---
         tags:
           - likes
+        # Защищаем метод (ендпоинт) авторизацией через токен в header (см. __init__.py, create_swagger - APIKeyHeader)
+        security:
+         - APIKeyHeader: []
         parameters:
-          - name: api-key
-            in: header
-            required: true
-            type: string
           - name: tweet_id
             in: path
             required: true
@@ -76,11 +75,9 @@ class LikesRoute(Resource):
         ---
         tags:
           - likes
+        security:
+         - APIKeyHeader: []
         parameters:
-          - name: api-key
-            in: header
-            required: true
-            type: string
           - name: tweet_id
             in: path
             required: true

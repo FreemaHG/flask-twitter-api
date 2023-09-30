@@ -101,6 +101,18 @@ def create_swagger(app: Flask) -> Swagger:
         "APIKeyHeader": {"type": "apiKey", "name": "api-key", "in": "header"}
     }
 
-    swagger = Swagger(app, template=template)
+    # Конфиги для загрузки при работе с Nginx
+    swagger_config = Swagger.DEFAULT_CONFIG
+    swagger_config[
+        "swagger_ui_bundle_js"
+    ] = "//unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js"
+    swagger_config[
+        "swagger_ui_standalone_preset_js"
+    ] = "//unpkg.com/swagger-ui-dist@3/swagger-ui-standalone-preset.js"
+    swagger_config["jquery_js"] = "//unpkg.com/jquery@2.2.4/dist/jquery.min.js"
+    swagger_config["swagger_ui_css"] = "//unpkg.com/swagger-ui-dist@3/swagger-ui.css"
+
+    swagger = Swagger(app, config=swagger_config, template=template)
+    # swagger = Swagger(app, template=template)
 
     return swagger

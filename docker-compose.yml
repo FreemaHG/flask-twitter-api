@@ -1,7 +1,7 @@
 version: '3.11'
 
 services:
-  web:
+  nginx:
     container_name: nginx
     build: nginx
     volumes:
@@ -45,4 +45,8 @@ services:
     env_file:
       - .env
     volumes:
-      - ./postgres_db/:/var/lib/postgresql/data
+      - postgres_db:/var/lib/postgresql/data
+
+# Именованные тома
+volumes:
+  postgres_db:

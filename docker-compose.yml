@@ -24,8 +24,13 @@ services:
       - 5555
     ports:
       - 5555:5000
+    command: ["/docker/app.sh"]
+    # Зависимость
     depends_on:
-      - postgres
+      postgres:
+        # Запуск только после успешной проверки контейнера с БД, успешный статус - healthy
+        condition: service_healthy
+    restart: unless-stopped
     logging:
       driver: "local"
 
@@ -46,6 +51,19 @@ services:
       - .env
     volumes:
       - postgres_db:/var/lib/postgresql/data
+    # Проверка доступности БД (при успешной проверке состояние контейнера - healthy, до этого - unhealthy)
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      # Кол-во попыток
+      retries: 5
+    # Автоматический перезапуск при перезагрузке системы
+    restart: unless-stopped
+
+networks:
+  local:
+    driver: bridge
 
 # Именованные тома
 volumes:

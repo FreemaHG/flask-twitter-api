@@ -22,7 +22,7 @@
 ## Сборка и запуск приложения
 1. Скачиваем содержимое репозитория в отдельную папку:
     ```
-    git clone https://github.com/FreemaHG/python_advanced_diploma.git
+    git clone https://github.com/FreemaHG/flask-twitter-api.git
     ```
 2. Переименовываем файл "**.env.template**" в "**.env**", при необходимости можно задать свои параметры.
 

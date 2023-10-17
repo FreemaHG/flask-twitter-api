@@ -8,7 +8,7 @@
 
 ## Используемые инструменты
 * **Python** (3.11);
-* **Flask** (Wev Framework);
+* **Flask** (Web Framework);
 * **Flasgger** (Api documentation);
 * **Docker** and **Docker Compose** (containerization);
 * **PostgreSQL** (database);
